@@ -1,0 +1,3 @@
+FROM node:10-alpine
+
+RUN apk --no-cache add pkgconfig autoconf automake libtool nasm build-base zlib-dev python libpng-dev git
