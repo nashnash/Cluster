@@ -3,16 +3,29 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="users")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface
 {
+
+    public function __construct()
+    {
+        $this->rating = 0;
+        $this->exp = 0;
+        $this->last_activity = new DateTime('now');
+        $this->premium = false;
+        $this->created_at = new DateTime('now');
+    }
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -57,7 +70,7 @@ class User implements UserInterface
     private $siren;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default":0})
      */
     private $rating;
 
@@ -72,7 +85,7 @@ class User implements UserInterface
     private $city;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default": 0})
      */
     private $exp;
 
@@ -82,12 +95,12 @@ class User implements UserInterface
     private $token_reset;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",options={"default":"CURRENT_TIMESTAMP"})
      */
     private $last_activity;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean",options={"default":false})
      */
     private $premium;
 
@@ -97,7 +110,7 @@ class User implements UserInterface
     private $premium_end_date;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",options={"default":"CURRENT_TIMESTAMP"})
      */
     private $created_at;
 
@@ -140,7 +153,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -171,7 +184,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     /**
@@ -430,24 +443,24 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
 
