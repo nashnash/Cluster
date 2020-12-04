@@ -13,6 +13,6 @@ use Symfony\Component\Validator\Constraint;
 class Siren extends Constraint
 {
 
-    public $message = 'The SIRET "{{ siren }}" contains an illegal characters. Please respect the format';
+    public $message = 'The SIREN "{{ siren }}" contains an illegal characters. Please respect the format';
 
 }

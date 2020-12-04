@@ -34,6 +34,7 @@ class UserFixtures extends Fixture
         $manager->persist($this->getProfessionalUser());
         $manager->persist($this->getUser());
         $manager->persist($this->getPremiumUser());
+        $manager->persist($this->getInativeUser());
 
         $manager->flush();
     }
@@ -58,6 +59,7 @@ class UserFixtures extends Fixture
         $admin->setUpdatedAt(new DateTime('now'));
         $admin->setLastActivity(new DateTime('now'));
         $admin->setPremium(false);
+        $admin->setActive(true);
         $admin->setRating(5);
 
         return $admin;
@@ -81,6 +83,7 @@ class UserFixtures extends Fixture
             ->setUpdatedAt(new DateTime('now'))
             ->setLastActivity(new DateTime('now'))
             ->setPremium(false)
+            ->setActive(true)
             ->setRating(5);
     }
 
@@ -102,6 +105,7 @@ class UserFixtures extends Fixture
             ->setUpdatedAt(new DateTime('now'))
             ->setLastActivity(new DateTime('now'))
             ->setPremium(false)
+            ->setActive(true)
             ->setRating(5);
     }
 
@@ -123,6 +127,29 @@ class UserFixtures extends Fixture
             ->setUpdatedAt(new DateTime('now'))
             ->setLastActivity(new DateTime('now'))
             ->setPremium(true)
+            ->setRating(5)
+            ->setActive(true)
+            ->setPremiumEndDate((new DateTime(''))->modify('+ 1 month'));
+    }
+
+    /**
+     * @return User
+     */
+    private function getInativeUser()
+    {
+
+        return (new User())->setRoles(['ROLE_USER'])
+            ->setLastname('INACTIVE')
+            ->setFirstname('INACTIVE')
+            ->setEmail('inactive@inactive.com')
+            ->setPassword($this->encoder->encodePassword(new User(), 'inactive'))
+            ->setAddress('1 Rue de Paris')
+            ->setCity('Paris')
+            ->setExp(rand(0, 400))
+            ->setCreatedAt(new DateTime('now'))
+            ->setUpdatedAt(new DateTime('now'))
+            ->setLastActivity(new DateTime('now'))
+            ->setActive(false)
             ->setRating(5)
             ->setPremiumEndDate((new DateTime(''))->modify('+ 1 month'));
     }

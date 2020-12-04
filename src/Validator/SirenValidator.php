@@ -23,21 +23,23 @@ class SirenValidator extends ConstraintValidator
         $siren = str_replace(' ', '', $value);
 
         $total = 0;
-        for ($i = 0; $i < 9; $i++) {
-            $temp = substr($siren, $i, 1);
-            if ($i % 2 == 1) {
-                $temp *= 2;
-                if ($temp > 9) {
-                    $temp -= 9;
+        if(strlen($siren) === 9) {
+            for ($i = 0; $i < 9; $i++) {
+                $temp = substr($siren, $i, 1);
+                if ($i % 2 == 1) {
+                    $temp *= 2;
+                    if ($temp > 9) {
+                        $temp -= 9;
+                    }
                 }
+                $total += $temp;
             }
-            $total += $temp;
+        }
 
-            if ((($total % 10) == 0) && strlen($siren) != 9 || !is_numeric($siren)) {
-                $this->context->buildViolation($constraint->message)
-                    ->setParameter('{{ siren }}', $value)
-                    ->addViolation();
-            }
+        if ((($total % 10) == 0) && strlen($siren) != 9 || !is_numeric($siren)) {
+            $this->context->buildViolation($constraint->message)
+                ->setParameter('{{ siren }}', $value)
+                ->addViolation();
         }
     }
 }

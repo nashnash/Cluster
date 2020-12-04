@@ -29,17 +29,19 @@ class SiretValidator extends ConstraintValidator
             $valid = false;
         }
 
-        for ($i = 0; $i < 14; $i++) {
-            if ($i % 2 == 0) {
-                $tmp = $siret[$i] * 2;
-                $tmp = $tmp > 9 ? $tmp - 9 : $tmp;
-            } else {
-                $tmp = $siret[$i];
+        if (strlen($siret) === 14) {
+            for ($i = 0; $i < 14; $i++) {
+                if ($i % 2 == 0) {
+                    $tmp = $siret[$i] * 2;
+                    $tmp = $tmp > 9 ? $tmp - 9 : $tmp;
+                } else {
+                    $tmp = $siret[$i];
+                }
+                $sum += $tmp;
             }
-            $sum += $tmp;
         }
 
-        if ($sum % 10 !== 0) {
+        if ($sum % 10 !== 0 && $sum > 0) {
             $valid = false;
         }
 
