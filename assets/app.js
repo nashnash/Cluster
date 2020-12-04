@@ -14,6 +14,7 @@ import './bootstrap';
 const $ = require('jquery');
 
 require('bootstrap');
+require('@fortawesome/fontawesome-free')
 
 $(document).ready(function() {
     $('[data-toggle="popover"]').popover();

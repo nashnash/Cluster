@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,6 +32,10 @@ class RegistrationUserFormType extends AbstractType
                     new NotBlank([
                         'message' => 'The firstname cannot be empty'
                     ])
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Prénom'
                 ]
             ])
             ->add('lastname', TextType::class, [
@@ -38,16 +43,17 @@ class RegistrationUserFormType extends AbstractType
                     new NotBlank([
                         'message' => 'The lastname cannot be empty'
                     ])
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Nom'
                 ]
             ])
-            ->add('email')
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
+            ->add('email', EmailType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'email@email.com'
+                ]
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
@@ -64,6 +70,10 @@ class RegistrationUserFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => '******'
+                ]
             ]);
     }
 

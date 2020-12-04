@@ -6,12 +6,11 @@ use App\Entity\User;
 use App\Validator\Siren;
 use App\Validator\Siret;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -33,6 +32,10 @@ class RegistrationProFormType extends AbstractType
                     new NotBlank([
                         'message' => 'The firstname cannot be empty'
                     ])
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Prénom'
                 ]
             ])
             ->add('lastname', TextType::class, [
@@ -40,16 +43,17 @@ class RegistrationProFormType extends AbstractType
                     new NotBlank([
                         'message' => 'The lastname cannot be empty'
                     ])
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Nom'
                 ]
             ])
-            ->add('email')
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
+            ->add('email', EmailType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'email@email.com'
+                ]
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
@@ -66,15 +70,27 @@ class RegistrationProFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => '******'
+                ]
             ])
             ->add('siret', TextType::class, [
                 'constraints' => [
                     new Siret()
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'SIRET'
                 ]
             ])
             ->add('siren', TextType::class, [
                 'constraints' => [
                     new Siren()
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'SIREN'
                 ]
             ]);;
     }
