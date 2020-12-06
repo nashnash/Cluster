@@ -61,6 +61,11 @@ services:
       - php
     volumes:
       - ./:/home/node/app
+  mail:
+    image: djfarrelly/maildev
+    ports:
+    - 1080:80
+    - 1025:25
 
 volumes:
   db-data: { }
