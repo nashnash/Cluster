@@ -10,6 +10,17 @@
       Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
   ];
   ```
+  
+ - Un fichier yaml ( stof_doctrine_extensions.yaml )est créé automatiquement (si non le créée )
+   ```yaml
+   stof_doctrine_extensions:
+    default_locale: fr_FR
+    orm:
+        default:
+            sluggable: true
+   
+   ```
+ 
  - Rajouter le namespace dans l'entité concerné et l'annotation sur la propriété concernée
  ```php 
     
