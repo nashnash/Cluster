@@ -60,7 +60,7 @@ class Event
     private $nb_participants;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -80,15 +80,24 @@ class Event
      */
     private $restrictions;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $price;
 
 
+    /**
+     * Event constructor.
+     */
     public function __construct()
     {
         $this->restrictions = new ArrayCollection();
     }
 
 
-
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -246,6 +255,18 @@ class Event
     public function removeRestriction(Restriction $restriction): self
     {
         $this->restrictions->removeElement($restriction);
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }
