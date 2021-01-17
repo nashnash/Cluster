@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event index{% endblock %}
+
+{% block body %}
+    <h1>Event index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Date/Heure de début</th>
+                <th>Date/Heure de fin</th>
+                <th>Status</th>
+                <th>Localisation</th>
+                <th>Description</th>
+                <th>Nombre de Participants</th>
+                <th>Prix</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+
+                <td>{{ event.name }}</td>
+                <td>{{ event.dateStart ? event.dateStart|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ event.dateEnd ? event.dateEnd|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ event.status }}</td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.nbParticipants }}</td>
+                <td>{{ event.price }}</td>
+                <td>
+                    <a href="{{ path('event_show', {'id': event.id}) }}">show</a>
+                    <a href="{{ path('event_edit', {'id': event.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="13">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('event_new') }}">Create new</a>
+{% endblock %}

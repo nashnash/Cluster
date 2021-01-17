@@ -6,6 +6,7 @@ use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=EventRepository::class)
@@ -25,6 +26,7 @@ class Event
     private $name;
 
     /**
+     * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(type="string", length=255)
      */
     private $slug;
@@ -105,11 +107,18 @@ class Event
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -117,11 +126,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSlug(): ?string
     {
         return $this->slug;
     }
 
+    /**
+     * @param string $slug
+     * @return $this
+     */
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
@@ -129,11 +145,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getDateStart(): ?\DateTimeInterface
     {
         return $this->date_start;
     }
 
+    /**
+     * @param \DateTimeInterface $date_start
+     * @return $this
+     */
     public function setDateStart(\DateTimeInterface $date_start): self
     {
         $this->date_start = $date_start;
@@ -141,11 +164,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getDateEnd(): ?\DateTimeInterface
     {
         return $this->date_end;
     }
 
+    /**
+     * @param \DateTimeInterface $date_end
+     * @return $this
+     */
     public function setDateEnd(\DateTimeInterface $date_end): self
     {
         $this->date_end = $date_end;
@@ -153,11 +183,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getStatus(): ?string
     {
         return $this->status;
     }
 
+    /**
+     * @param string $status
+     * @return $this
+     */
     public function setStatus(string $status): self
     {
         $this->status = $status;
@@ -165,11 +202,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLocation(): ?string
     {
         return $this->location;
     }
 
+    /**
+     * @param string $location
+     * @return $this
+     */
     public function setLocation(string $location): self
     {
         $this->location = $location;
@@ -177,11 +221,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
+    /**
+     * @param string $description
+     * @return $this
+     */
     public function setDescription(string $description): self
     {
         $this->description = $description;
@@ -189,11 +240,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getNbParticipants(): ?int
     {
         return $this->nb_participants;
     }
 
+    /**
+     * @param int $nb_participants
+     * @return $this
+     */
     public function setNbParticipants(int $nb_participants): self
     {
         $this->nb_participants = $nb_participants;
@@ -201,11 +259,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return User|null
+     */
     public function getUser(): ?User
     {
         return $this->user;
     }
 
+    /**
+     * @param User $user
+     * @return $this
+     */
     public function setUser(User $user): self
     {
         $this->user = $user;
@@ -213,6 +278,9 @@ class Event
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->created_at;
@@ -225,6 +293,9 @@ class Event
         return $this;
     }*/
 
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updated_at;
@@ -245,6 +316,10 @@ class Event
         return $this->restrictions;
     }
 
+    /**
+     * @param Restriction $restriction
+     * @return $this
+     */
     public function addRestriction(Restriction $restriction): self
     {
         if (!$this->restrictions->contains($restriction)) {
@@ -254,6 +329,10 @@ class Event
         return $this;
     }
 
+    /**
+     * @param Restriction $restriction
+     * @return $this
+     */
     public function removeRestriction(Restriction $restriction): self
     {
         $this->restrictions->removeElement($restriction);
@@ -261,11 +340,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return float|null
+     */
     public function getPrice(): ?float
     {
         return $this->price;
     }
 
+    /**
+     * @param float $price
+     * @return $this
+     */
     public function setPrice(float $price): self
     {
         $this->price = $price;
