@@ -47,4 +47,45 @@ class EventRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * Returns an array of professional's Event objects
+     * @param $idUser
+     * @return int|mixed|string
+     */
+    public function findEventsOfProfesional($idUser)
+    {
+
+        $em = $this->getEntityManager();
+        $query = $em->createQuery("
+                SELECT e, u, r FROM App\Entity\Event e
+                JOIN e.user u
+                JOIN e.restrictions r
+                WHERE e.user = :idUser");
+        $query->setParameter('idUser', $idUser);
+        return $query->getResult();
+
+    }
+
+    /**
+     * Returns current Event
+     * @param $idUser
+     * @param $idEvent
+     * @return int|mixed|string
+     */
+    public function findCurrentEvent($idUser, $idEvent)
+    {
+
+        $em = $this->getEntityManager();
+        $query = $em->createQuery("
+                SELECT e, u, r FROM App\Entity\Event e
+                JOIN e.user u
+                JOIN e.restrictions r
+                WHERE e.user = :idUser
+                AND e.id = :idEvent");
+        $query->setParameter('idUser', $idUser)
+            ->setParameter('idEvent', $idEvent);
+        return $query->getResult();
+
+    }
 }

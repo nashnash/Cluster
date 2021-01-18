@@ -17,16 +17,20 @@ class EventController extends AbstractController
 {
     /**
      * @Route("/", name="event_index", methods={"GET"})
+     * @param EventRepository $eventRepository
+     * @return Response
      */
     public function index(EventRepository $eventRepository): Response
     {
         return $this->render('event/index.html.twig', [
-            'events' => $eventRepository->findAll(),
+            'events' => $eventRepository->findEventsOfProfesional($this->getUser()->getId())
         ]);
     }
 
     /**
      * @Route("/new", name="event_new", methods={"GET","POST"})
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
@@ -54,16 +58,23 @@ class EventController extends AbstractController
 
     /**
      * @Route("/{id}", name="event_show", methods={"GET"})
+     * @param EventRepository $eventRepository
+     * @param Event $event
+     * @return Response
      */
-    public function show(Event $event): Response
+    public function show(EventRepository $eventRepository,Event $event): Response
     {
         return $this->render('event/show.html.twig', [
-            'event' => $event,
+            'currentEvent' => $eventRepository->findCurrentEvent($this->getUser(),
+                $event->getId())
         ]);
     }
 
     /**
      * @Route("/{id}/edit", name="event_edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param Event $event
+     * @return Response
      */
     public function edit(Request $request, Event $event): Response
     {
@@ -84,6 +95,9 @@ class EventController extends AbstractController
 
     /**
      * @Route("/{id}", name="event_delete", methods={"DELETE"})
+     * @param Request $request
+     * @param Event $event
+     * @return Response
      */
     public function delete(Request $request, Event $event): Response
     {

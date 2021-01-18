@@ -3,7 +3,10 @@
 {% block title %}Event index{% endblock %}
 
 {% block body %}
-    <h1>Event index</h1>
+
+    {% for event in events %}
+    <h1>Les Evenements de {{ event.getUser().getFirstName() }}
+        {{ event.getUser().getLastName() }}</h1>
 
     <table class="table">
         <thead>
@@ -11,26 +14,26 @@
                 <th>Nom</th>
                 <th>Date/Heure de début</th>
                 <th>Date/Heure de fin</th>
-                <th>Status</th>
-                <th>Localisation</th>
+                <th>Lieu</th>
                 <th>Description</th>
-                <th>Nombre de Participants</th>
+                <th>Capacité</th>
                 <th>Prix</th>
+                <th>Status</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for event in events %}
+
             <tr>
 
                 <td>{{ event.name }}</td>
-                <td>{{ event.dateStart ? event.dateStart|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ event.dateEnd ? event.dateEnd|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ event.status }}</td>
+                <td>{{ event.dateStart ? event.dateStart|date('d/m/Y H:i') : '' }}</td>
+                <td>{{ event.dateEnd ? event.dateEnd|date('d/m/Y H:i') : '' }}</td>
                 <td>{{ event.location }}</td>
                 <td>{{ event.description }}</td>
                 <td>{{ event.nbParticipants }}</td>
-                <td>{{ event.price }}</td>
+                <td>{{ event.price }} €</td>
+                <td>{{ event.status }}</td>
                 <td>
                     <a href="{{ path('event_show', {'id': event.id}) }}">show</a>
                     <a href="{{ path('event_edit', {'id': event.id}) }}">edit</a>
@@ -40,9 +43,10 @@
             <tr>
                 <td colspan="13">no records found</td>
             </tr>
-        {% endfor %}
+
         </tbody>
     </table>
 
     <a href="{{ path('event_new') }}">Create new</a>
+    {% endfor %}
 {% endblock %}
