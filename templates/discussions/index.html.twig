@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block subtitle %}Messagerie{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('chat') }}
+{% endblock %}
+
+{% block body %}
+    <a href="">Retour au site</a>
+    <div class="pt-3 px-4">
+        <div class="row rounded-lg overflow-hidden shadow">
+            <!-- Users box-->
+            <div class="col-5 px-0">
+                <div class="bg-white">
+
+                    <div class="bg-gray px-4 py-2 bg-light">
+                        <p class="h5 mb-0 py-1">Recent</p>
+                    </div>
+
+                    <div class="messages-box">
+                        <div class="list-group rounded-0">
+                            {% for key, conversation in conversations %}
+                                <a class="list-group-item list-group-item-action {% if key == 0 %} active {% else %} bg-light text-dark {% endif %} text-white rounded-0">
+                                    <div class="media">
+                                        <div class="media-body ml-4">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <h6 class="mb-0"> {% if conversation.owner == app.user %} <i class="fas fa-bolt"></i> {% endif %} {{ conversation.name }}</h6>
+                                                <small class="small font-weight-bold">{% if conversation.messages|length > 0 %} {{ conversation.messages[conversation.messages|length - 1].createdat|format_datetime(locale='fr', pattern="F LLLL r H:mm") }} {% else %} Vide {% endif %}</small>
+                                            </div>
+                                            <p class="font-italic mb-0 text-small">{% if conversation.messages|length > 0 %}  {{ conversation.messages[conversation.messages|length - 1].message }} {% else %} Vide {% endif %}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Chat Box-->
+            <div class="col-7 px-0">
+                <div class="px-4 py-5 chat-box bg-white">
+                    {% for message in messages %}
+                        <!-- Sender Message-->
+                        <div class="media {% if message.user == app.user %} ml-auto {% endif %} w-50 mb-3"><img
+                                    src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"
+                                    alt="user" width="50" class="rounded-circle">
+                            <div class="media-body ml-3">
+                                <div class="bg-light rounded py-2 px-3 mb-2">
+                                    <p class="text-small mb-0 text-muted">{{ message.message|nl2br }}</p>
+                                </div>
+                                <p class="small text-muted">{{ message.createdat|format_datetime(locale='fr', pattern="eeee F LLLL r - HH:mm") }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Typing area -->
+                <form action="#" class="bg-light">
+                    <div class="input-group">
+                        <input type="text" placeholder="Type a message" aria-describedby="button-addon2"
+                               class="form-control rounded-0 border-0 py-4 bg-light">
+                        <div class="input-group-append">
+                            <button id="button-addon2" type="submit" class="btn btn-link"><i
+                                        class="fa fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('chat') }}
+{% endblock %}
