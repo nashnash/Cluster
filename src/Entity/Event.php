@@ -7,9 +7,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqualValidator;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\ExpressionValidator ;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=EventRepository::class)
+ * * @UniqueEntity(fields="name", message="Ce nom d'événement existe deja")
  */
 class Event
 {
@@ -22,22 +29,38 @@ class Event
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex(
+     *     pattern="#^([A-Za-z0-9]['\s\-\',]{0,})+(['\.]{0,1})*$#",
+     *     match=true,
+     *     message="Le nom de l'événement est invalide"
+     * )
      */
     private $name;
 
     /**
      * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $slug;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\GreaterThanOrEqual("today UTC",
+     *     message="La date de début doit être supérieure ou égale à la date du jour!")
+     * @Assert\Expression("this.getDateStart() <= this.getDateEnd()",
+     *     message="La date de début doit être inférieure ou égale à la date de fin!"
+     * )
      */
     private $date_start;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\GreaterThanOrEqual("today UTC",
+     *     message="La date de fin doit être supérieure ou égale à la date du jour!")
+     * @Assert\Expression(
+     *     "this.getDateEnd() >= this.getDateStart()",
+     *     message="La date de fin doit être supérieure ou égale à la date de début!"
+     * )
      */
     private $date_end;
 
@@ -48,16 +71,32 @@ class Event
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex(
+     *     pattern="#^([A-Za-z0-9]['\s\-\',]{0,})+(['\.]{0,1})*$#",
+     *     match=true,
+     *     message="Le lieu de l'événement est invalide"
+     * )
      */
     private $location;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 500,
+     *      minMessage = "Votre description doit contenir au moins 10 caractères",
+     *      maxMessage = "Votre description doit contenir au plus 300 caractères")
+     * @Assert\Regex(
+     *     pattern="#^([A-Za-z0-9]['\s\-\',]{0,})+(['\.]{0,1})*$#",
+     *     match=true,
+     *     message="La description de l'événement est invalide"
+     * )
      */
     private $description;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Positive(message="Il doit y avoir au moins un participant")
      */
     private $nb_participants;
 
@@ -78,7 +117,7 @@ class Event
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
-
+    
     /**
      * @ORM\ManyToMany(targetEntity=Restriction::class, inversedBy="events")
      */
@@ -86,8 +125,15 @@ class Event
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\PositiveOrZero
      */
     private $price;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="change", field={"status"})
+     */
+    private $updatedStatus;
 
 
     /**
@@ -355,6 +401,18 @@ class Event
     public function setPrice(float $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getUpdatedStatus(): ?\DateTimeInterface
+    {
+        return $this->updatedStatus;
+    }
+
+    public function setUpdatedStatus(?\DateTimeInterface $updatedStatus): self
+    {
+        $this->updatedStatus = $updatedStatus;
 
         return $this;
     }
