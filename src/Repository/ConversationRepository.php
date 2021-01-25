@@ -30,7 +30,8 @@ class ConversationRepository extends ServiceEntityRepository
             ->leftJoin('c.messages', 'messages')
             ->leftJoin('c.participants', 'participants')
             ->where('participants.email = :email')
-            ->orderBy('messages.updated_at','DESC')
+            ->addOrderBy('c.created_at','DESC')
+            ->addOrderBy('messages.updated_at','DESC')
             ->setParameter('email', $user->getEmail())
             ->getQuery()
             ->getResult();

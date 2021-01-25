@@ -6,6 +6,7 @@ use App\Repository\ConversationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ConversationRepository::class)
@@ -38,6 +39,7 @@ class Conversation
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="conversations")
+     * @Assert\Count(min="1")
      */
     private $participants;
 

@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -28,6 +29,7 @@ class User implements UserInterface
         $this->created_at = new DateTime('now');
         $this->conversations = new ArrayCollection();
         $this->messages = new ArrayCollection();
+        $this->friends = new ArrayCollection();
     }
 
     /**
@@ -142,6 +144,16 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Messages::class, mappedBy="user")
      */
     private $messages;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="friends")
+     * @ORM\JoinTable(
+     *     name="user_friends",
+     *     joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="friend_id", referencedColumnName="id")}
+     * )
+     */
+    private $friends;
 
     /**
      * @return int|null
@@ -568,6 +580,30 @@ class User implements UserInterface
                 $message->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getFriends(): Collection
+    {
+        return $this->friends;
+    }
+
+    public function addFriend(self $friend): self
+    {
+        if (!$this->friends->contains($friend)) {
+            $this->friends[] = $friend;
+        }
+
+        return $this;
+    }
+
+    public function removeFriend(self $friend): self
+    {
+        $this->friends->removeElement($friend);
 
         return $this;
     }

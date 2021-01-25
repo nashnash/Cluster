@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Conversation;
 use App\Entity\Messages;
+use App\Form\CreateConversationType;
 use App\Form\SendMessageConversationType;
 use App\Repository\ConversationRepository;
+use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,15 +39,21 @@ class DiscussionsController extends AbstractController
      * @Route("/discussions/{id}", name="discussions")
      * @param ConversationRepository $conversationRepository
      * @param Request $request
+     * @param UserRepository $userRepository
      * @param int $id
      * @return Response
      */
-    public function index(ConversationRepository $conversationRepository, Request $request, int $id = 0): Response
+    public function index(ConversationRepository $conversationRepository, Request $request, UserRepository $userRepository, int $id = 0): Response
     {
         $message = new Messages();
 
         $formMessage = $this->createForm(SendMessageConversationType::class, $message);
         $formMessage->handleRequest($request);
+
+        $conversationEntity = new Conversation();
+
+        $formNewDiscussion = $this->createForm(CreateConversationType::class, $conversationEntity);
+        $formNewDiscussion->handleRequest($request);
 
         $conversations = $conversationRepository->getLastUpdated($this->getUser());
 
@@ -59,13 +68,24 @@ class DiscussionsController extends AbstractController
 
             $this->em->persist($message);
             $this->em->flush();
-            return $this->redirectToRoute("discussions",['id' => $id ?? null]);
+            return $this->redirectToRoute("discussions", ['id' => $id ?? null]);
+        }
+
+        if($formNewDiscussion->isSubmitted() && $formNewDiscussion->isValid()) {
+            $conversationEntity->setCreatedAt(new DateTime());
+            $conversationEntity->setOwner($this->getUser());
+            $conversationEntity->addParticipant($this->getUser());
+            $this->em->persist($conversationEntity);
+            $this->em->flush();
+            return $this->redirectToRoute('discussions');
         }
 
         return $this->render('discussions/index.html.twig', [
             'conversations' => $conversations,
             'activeConversation' => $conversation,
-            'formMessage' => $formMessage->createView()
+            'formMessage' => $formMessage->createView(),
+            'friends' => $userRepository->getFriends($this->getUser()),
+            'formNewDiscussion' => $formNewDiscussion->createView()
         ]);
     }
 }
