@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Conversation;
 use App\Entity\Messages;
+use App\Form\AddFriendConversationType;
 use App\Form\CreateConversationType;
 use App\Form\SendMessageConversationType;
 use App\Repository\ConversationRepository;
@@ -55,9 +56,13 @@ class DiscussionsController extends AbstractController
         $formNewDiscussion = $this->createForm(CreateConversationType::class, $conversationEntity);
         $formNewDiscussion->handleRequest($request);
 
+
         $conversations = $conversationRepository->getLastUpdated($this->getUser());
 
         $conversation = ($id > 0) ? $conversationRepository->find($id) : $conversations[0];
+
+        $formAddFriend = $this->createForm(AddFriendConversationType::class, new Conversation());
+        $formAddFriend->handleRequest($request);
 
         if ($formMessage->isSubmitted() && $formMessage->isValid()) {
             $message->setConversation($conversation);
@@ -71,7 +76,7 @@ class DiscussionsController extends AbstractController
             return $this->redirectToRoute("discussions", ['id' => $id ?? null]);
         }
 
-        if($formNewDiscussion->isSubmitted() && $formNewDiscussion->isValid()) {
+        if ($formNewDiscussion->isSubmitted() && $formNewDiscussion->isValid()) {
             $conversationEntity->setCreatedAt(new DateTime());
             $conversationEntity->setOwner($this->getUser());
             $conversationEntity->addParticipant($this->getUser());
@@ -80,12 +85,20 @@ class DiscussionsController extends AbstractController
             return $this->redirectToRoute('discussions');
         }
 
+        if($formAddFriend->isSubmitted() && $formAddFriend->isValid()) {
+            foreach ($formAddFriend->getData()->getParticipants()->toArray() as $friend) {
+                $conversation->addParticipant($friend);
+                $this->em->persist($conversation);
+            }
+        }
+
         return $this->render('discussions/index.html.twig', [
             'conversations' => $conversations,
             'activeConversation' => $conversation,
             'formMessage' => $formMessage->createView(),
             'friends' => $userRepository->getFriends($this->getUser()),
-            'formNewDiscussion' => $formNewDiscussion->createView()
+            'formNewDiscussion' => $formNewDiscussion->createView(),
+            'formAddFriend' => $formAddFriend->createView()
         ]);
     }
 }

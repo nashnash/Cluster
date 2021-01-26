@@ -16,3 +16,8 @@ $(".select-participants").select2({
     width: "100%",
     style: 'width: 100%'
 });
+
+$("#addMember").on('click', function (event) {
+    $("#moreInformationModal").modal('hide');
+    $("#addMemberModal").modal('show');
+})
