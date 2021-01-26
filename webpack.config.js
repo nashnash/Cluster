@@ -23,6 +23,7 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('front', './assets/front.js')
     .addEntry('chat', './assets/chat.js')
+    .addEntry('back', './assets/back.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
@@ -76,7 +77,7 @@ Encore
         from: './assets/images',
 
         // optional target path, relative to the output dir
-        //to: 'images/[path][name].[ext]',
+        to: 'images/[path]/[name].[ext]',
 
         // if versioning is enabled, add the file hash too
         //to: 'images/[path][name].[hash:8].[ext]',
