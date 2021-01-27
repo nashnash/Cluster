@@ -1,4 +1,7 @@
 {
+    "beberlei/doctrineextensions": {
+        "version": "v1.3.0"
+    },
     "behat/transliterator": {
         "version": "v1.3.0"
     },
@@ -98,6 +101,9 @@
     },
     "egulias/email-validator": {
         "version": "2.1.24"
+    },
+    "eluceo/ical": {
+        "version": "0.16.1"
     },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.0"

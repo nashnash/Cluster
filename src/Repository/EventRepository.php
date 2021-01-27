@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -86,6 +87,23 @@ class EventRepository extends ServiceEntityRepository
         $query->setParameter('idUser', $idUser)
             ->setParameter('idEvent', $idEvent);
         return $query->getResult();
+
+    }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function findNext10DaysEvents()
+    {
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.participants','participants')
+            ->where('DATE_DIFF(CURRENT_DATE(),e.date_start) <= 10 AND DATE_DIFF(CURRENT_DATE(),e.date_start) <= 0')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getPastEvents(User $user)
+    {
 
     }
 }
