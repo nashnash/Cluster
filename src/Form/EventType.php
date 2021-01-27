@@ -13,90 +13,56 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name',TextType::class, [
-
+            ->add('name', TextType::class, [
                 'label' => "Nom",
-
                 'attr' => [
-
                     'placeholder' => "Nom de l'Événement",
-
                 ]
             ])
-
-
-            ->add('date_start',DateTimeType::class, [
-
+            ->add('date_start', DateTimeType::class, [
                 'label' => "Date/Heure de Début",
-                //'date_widget'  => 'single_text',
-                //'time_widget'  => 'single_text',
                 'widget' => 'single_text'
-
             ])
-
-            ->add('date_end',DateTimeType::class, [
-
+            ->add('date_end', DateTimeType::class, [
                 'label' => "Date/Heure de Fin",
-                //'date_widget'  => 'single_text',
-                //'time_widget'  => 'single_text',
                 'widget' => 'single_text'
-
-
             ])
-
-
-            ->add('location',TextType::class,[
-
+            ->add('location', TextType::class, [
                 'label' => 'Localisation',
-
                 'attr' => [
-
                     'placeholder' => "Le lieu de l'Événement"
                 ]
             ])
-
-            ->add('description',TextareaType::class, [
-
+            ->add('description', TextareaType::class, [
                 'attr' => [
-
                     'placeholder' => "La description de l'Événement"
                 ]
             ])
-
-            ->add('nb_participants',IntegerType::class, [
-
+            ->add('nb_participants', IntegerType::class, [
                 'label' => "Nombre de particpants",
                 'attr' => [
-
                     'placeholder' => "Le nombre de particpants à l'Événement",
-
                 ]
             ])
-
-            ->add('price',MoneyType::class, [
-
+            ->add('price', MoneyType::class, [
                 'label' => "Prix",
                 'attr' => [
-
                     'placeholder' => "Le prix de l'Événement",
-
                 ]
             ])
-
-            ->add('restrictions',EntityType::class, [
-
+            ->add('restrictions', EntityType::class, [
                 'label' => 'Restriction(s)',
                 'class' => Restriction::class,
                 'multiple' => true,
-                'choice_label' => 'name'
-
+                'choice_label' => 'name',
+                'required' => false
             ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver)

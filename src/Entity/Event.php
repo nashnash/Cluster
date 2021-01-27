@@ -6,17 +6,12 @@ use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqualValidator;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\ExpressionValidator ;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=EventRepository::class)
- * * @UniqueEntity(fields="name", message="Ce nom d'événement existe deja")
  */
 class Event
 {
@@ -29,11 +24,8 @@ class Event
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex(
-     *     pattern="#^([A-Za-z0-9]['\s\-\',]{0,})+(['\.]{0,1})*$#",
-     *     match=true,
-     *     message="Le nom de l'événement est invalide"
-     * )
+     * @Assert\NotNull()
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -71,11 +63,8 @@ class Event
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex(
-     *     pattern="#^([A-Za-z0-9]['\s\-\',]{0,})+(['\.]{0,1})*$#",
-     *     match=true,
-     *     message="Le lieu de l'événement est invalide"
-     * )
+     * @Assert\NotNull()
+     * @Assert\NotBlank()
      */
     private $location;
 
@@ -85,12 +74,7 @@ class Event
      *      min = 10,
      *      max = 500,
      *      minMessage = "Votre description doit contenir au moins 10 caractères",
-     *      maxMessage = "Votre description doit contenir au plus 300 caractères")
-     * @Assert\Regex(
-     *     pattern="#^([A-Za-z0-9]['\s\-\',]{0,})+(['\.]{0,1})*$#",
-     *     match=true,
-     *     message="La description de l'événement est invalide"
-     * )
+     *      maxMessage = "Votre description doit contenir au plus 500 caractères")
      */
     private $description;
 
@@ -135,6 +119,11 @@ class Event
      */
     private $updatedStatus;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="events")
+     */
+    private $participants;
+
 
     /**
      * Event constructor.
@@ -142,6 +131,7 @@ class Event
     public function __construct()
     {
         $this->restrictions = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
 
@@ -413,6 +403,30 @@ class Event
     public function setUpdatedStatus(?\DateTimeInterface $updatedStatus): self
     {
         $this->updatedStatus = $updatedStatus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(User $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants[] = $participant;
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(User $participant): self
+    {
+        $this->participants->removeElement($participant);
 
         return $this;
     }
