@@ -27,6 +27,7 @@ class User implements UserInterface
         $this->last_activity = new DateTime('now');
         $this->premium = false;
         $this->created_at = new DateTime('now');
+        $this->events = new ArrayCollection();
         $this->conversations = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->friends = new ArrayCollection();
@@ -136,6 +137,10 @@ class User implements UserInterface
     private $activation_token;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="participants")
+     */
+    private $events;
+  
      * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="participants")
      */
     private $conversations;
@@ -528,6 +533,32 @@ class User implements UserInterface
     }
 
     /**
+     * @return Collection|Event[]
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events[] = $event;
+            $event->addParticipant($this);
+        }
+        return $this;
+    }
+ 
+    public function removeEvent(Event $event): self
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeParticipant($this);
+        }
+
+        return $this;
+    }
+  
+    /*
      * @return Collection|Conversation[]
      */
     public function getConversations(): Collection
@@ -544,7 +575,7 @@ class User implements UserInterface
 
         return $this;
     }
-
+  
     public function removeConversation(Conversation $conversation): self
     {
         if ($this->conversations->removeElement($conversation)) {
