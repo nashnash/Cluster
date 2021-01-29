@@ -63,3 +63,9 @@
         <a href="{{ path('event_new') }}">Create new</a>
     {% endfor %}
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('utils_geoloc') }}
+    {{ encore_entry_script_tags('test') }}
+{% endblock %}

@@ -36,7 +36,8 @@ class EventType extends AbstractType
             ->add('location', TextType::class, [
                 'label' => 'Localisation',
                 'attr' => [
-                    'placeholder' => "Le lieu de l'Événement"
+                    'placeholder' => "Le lieu de l'Événement",
+                    'id' => 'searchBox'
                 ]
             ])
             ->add('description', TextareaType::class, [

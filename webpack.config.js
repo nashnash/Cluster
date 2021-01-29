@@ -22,6 +22,8 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('front', './assets/front.js')
+    .addEntry('utils_geoloc','./assets/utils/geoloc.js')
+    .addEntry('test','./assets/test.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')

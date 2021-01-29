@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Entity\User;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use Eluceo\iCal\Component\Calendar;
+use Eluceo\iCal\Component\Event as ICalEvent;
 use Eluceo\iCal\Property\Event\Geo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -64,6 +64,35 @@ class EventController extends AbstractController
             'event' => $event,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/past",name="past_event")
+     * @param EventRepository $eventRepository
+     * @return Response
+     */
+    public function pastEvents(EventRepository $eventRepository): Response
+    {
+        return $this->render('event/pasts.html.twig', [
+            'events' => $eventRepository->getPastEvents($this->getUser()),
+        ]);
+    }
+
+    /**
+     * @Route("/actual",name="actual_event")
+     * @param EventRepository $eventRepository
+     * @return Response
+     */
+    public function actualEvents(EventRepository $eventRepository): Response
+    {
+        return $this->render('event/actual.html.twig', [
+            'events' => $eventRepository->getActualEvents($this->getUser()),
+        ]);
+    }
+
+    public function inCommingEvents()
+    {
+
     }
 
     /**
@@ -161,43 +190,16 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/events_past",methods={"GET"},name="events_pasts")
-     * @param EventRepository $eventRepository
-     * @return Response
-     */
-    public function eventsInPast(EventRepository $eventRepository): Response
-    {
-
-        return $this->render('event/pasts.html.twig', [
-            'events' => $eventRepository->getPastEvents($this->getUser())
-        ]);
-    }
-
-    /**
      * @Route("/add_calendar/{id}",name="add_calendar", methods={"GET"})
      * @param Event $event
      * @param HttpClientInterface $client
-     * @throws ClientExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
      */
     public function addCalendar(Event $event, HttpClientInterface $client)
     {
         $vCalendar = new Calendar('13123');
-        $iCalEvent = new \Eluceo\iCal\Component\Event();
-
-        // Get lat & lng
-
-        $response = $client->request(
-            'GET',
-            'https://nominatim.openstreetmap.org/search/1%20rue%20raymond%20du%20temple%20Vincennes?format=json&addressdetails=1&limit=1&polygon_svg=1'
-        );
-
-        $geoResponse = json_decode($response->getContent())[0];
+        $iCalEvent = new ICalEvent();
 
         $iCalEvent->setSummary($event->getName());
-        $iCalEvent->setGeoLocation(new Geo($geoResponse->lat, $geoResponse->lon));
         $iCalEvent->setDescription($event->getDescription());
         $iCalEvent->setDtStart($event->getDateStart());
         $iCalEvent->setDtEnd($event->getDateEnd());
@@ -207,5 +209,13 @@ class EventController extends AbstractController
         header('Content-Disposition: inline; filename="cal.ics"');
         echo($vCalendar->render());
         exit;
+    }
+
+    /**
+     * @Route("/stats",name="events_stats", methods={"GET"})
+     */
+    public function stats()
+    {
+        return $this->render('event/stats.html.twig', []);
     }
 }
