@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -27,6 +28,9 @@ class User implements UserInterface
         $this->premium = false;
         $this->created_at = new DateTime('now');
         $this->events = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->friends = new ArrayCollection();
     }
 
     /**
@@ -136,6 +140,25 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="participants")
      */
     private $events;
+  
+     * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="participants")
+     */
+    private $conversations;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Messages::class, mappedBy="user")
+     */
+    private $messages;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="friends")
+     * @ORM\JoinTable(
+     *     name="user_friends",
+     *     joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="friend_id", referencedColumnName="id")}
+     * )
+     */
+    private $friends;
 
     /**
      * @return int|null
@@ -523,15 +546,95 @@ class User implements UserInterface
             $this->events[] = $event;
             $event->addParticipant($this);
         }
-
         return $this;
     }
-
+ 
     public function removeEvent(Event $event): self
     {
         if ($this->events->removeElement($event)) {
             $event->removeParticipant($this);
         }
+
+        return $this;
+    }
+  
+    /*
+     * @return Collection|Conversation[]
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): self
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations[] = $conversation;
+            $conversation->addParticipant($this);
+        }
+
+        return $this;
+    }
+  
+    public function removeConversation(Conversation $conversation): self
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Messages[]
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Messages $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Messages $message): self
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getUser() === $this) {
+                $message->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getFriends(): Collection
+    {
+        return $this->friends;
+    }
+
+    public function addFriend(self $friend): self
+    {
+        if (!$this->friends->contains($friend)) {
+            $this->friends[] = $friend;
+        }
+
+        return $this;
+    }
+
+    public function removeFriend(self $friend): self
+    {
+        $this->friends->removeElement($friend);
 
         return $this;
     }
