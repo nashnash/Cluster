@@ -59,7 +59,11 @@ class DiscussionsController extends AbstractController
 
         $conversations = $conversationRepository->getLastUpdated($this->getUser());
 
-        $conversation = ($id > 0) ? $conversationRepository->find($id) : $conversations[0];
+        if(count($conversations) > 0) {
+            $conversation = ($id > 0) ? $conversationRepository->find($id) : $conversations[0];
+        } else {
+            $conversation = new Conversation();
+        }
 
         $formAddFriend = $this->createForm(AddFriendConversationType::class, new Conversation());
         $formAddFriend->handleRequest($request);

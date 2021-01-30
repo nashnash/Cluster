@@ -105,6 +105,9 @@
     "eluceo/ical": {
         "version": "0.16.1"
     },
+    "fakerphp/faker": {
+        "version": "v1.12.1"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.0"
     },
@@ -113,9 +116,6 @@
     },
     "gedmo/doctrine-extensions": {
         "version": "v3.0.0"
-    },
-    "fakerphp/faker": {
-        "version": "v1.12.1"
     },
     "laminas/laminas-code": {
         "version": "3.5.0"
