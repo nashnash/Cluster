@@ -32,6 +32,7 @@ class User implements UserInterface
         $this->messages = new ArrayCollection();
         $this->friends = new ArrayCollection();
         $this->badges = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     /**
@@ -166,6 +167,11 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity=Badge::class, inversedBy="users")
      */
     private $badges;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="user")
+     */
+    private $posts;
 
     /**
      * @return int|null
@@ -666,6 +672,36 @@ class User implements UserInterface
     public function removeBadge(Badge $badge): self
     {
         $this->badges->removeElement($badge);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
 
         return $this;
     }
