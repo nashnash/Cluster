@@ -31,6 +31,7 @@ class User implements UserInterface
         $this->conversations = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->friends = new ArrayCollection();
+        $this->badges = new ArrayCollection();
     }
 
     /**
@@ -140,6 +141,7 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="participants")
      */
     private $events;
+  
     /**
      * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="participants")
      */
@@ -159,6 +161,11 @@ class User implements UserInterface
      * )
      */
     private $friends;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Badge::class, inversedBy="users")
+     */
+    private $badges;
 
     /**
      * @return int|null
@@ -635,6 +642,30 @@ class User implements UserInterface
     public function removeFriend(self $friend): self
     {
         $this->friends->removeElement($friend);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Badge[]
+     */
+    public function getBadges(): Collection
+    {
+        return $this->badges;
+    }
+
+    public function addBadge(Badge $badge): self
+    {
+        if (!$this->badges->contains($badge)) {
+            $this->badges[] = $badge;
+        }
+
+        return $this;
+    }
+
+    public function removeBadge(Badge $badge): self
+    {
+        $this->badges->removeElement($badge);
 
         return $this;
     }

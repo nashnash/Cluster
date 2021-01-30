@@ -8,6 +8,22 @@
 {% endblock %}
 
 {% block body %}
+
+    <div class="d-flex flex-row justify-content-end">
+        <div class="alerts">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert fade fadeInDown show alert-dismissible alert-{{ label }}"
+                         role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>{{ message }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
     <div class="pt-3 px-4">
         <div class="row rounded-lg overflow-hidden shadow">
             <!-- Users box-->
