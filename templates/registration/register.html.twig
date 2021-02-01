@@ -1,0 +1,91 @@
+{% extends 'base-front.html.twig' %}
+
+{% block subtitle %}Inscription clients{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('front') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('front') }}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    {% for flashError in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+    {% endfor %}
+
+    <div class="wrapper">
+        <div class="page-header">
+            <div class="page-header-image"></div>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 offset-md-3">
+                            <div id="square7" class="square square-7"></div>
+                            <div id="square8" class="square square-8"></div>
+                            <div class="card card-register">
+                                <div class="card-header">
+                                    <img class="card-img" src="{{ asset('build/images/square1.png') }}"
+                                         alt="Card image">
+                                    <h4 class="card-title text-center">S'inscrire</h4>
+                                </div>
+                                <div class="card-body">
+                                    {{ form_start(registrationForm) }}
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="tim-icons icon-single-02"></i>
+                                            </div>
+                                        </div>
+                                        {{ form_widget(registrationForm.firstname) }}
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="tim-icons icon-single-02"></i>
+                                            </div>
+                                        </div>
+                                        {{ form_widget(registrationForm.lastname) }}
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="tim-icons icon-email-85"></i>
+                                            </div>
+                                        </div>
+                                        {{ form_widget(registrationForm.email) }}
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="tim-icons icon-lock-circle"></i>
+                                            </div>
+                                        </div>
+                                        {{ form_widget(registrationForm.plainPassword) }}
+                                    </div>
+                                    <div class="input-group">
+                                        <h5 class="text-center">En cliquant sur le bouton d'inscription vous acceptez les <a href="#">Conditions Générales d'Utilisations</a></h5>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <input type="submit" value="Nous rejoindre" class="btn btn-info btn-round btn-lg">
+                                </div>
+                                {{ form_end(registrationForm) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="register-bg"></div>
+                    <div id="square1" class="square square-1"></div>
+                    <div id="square2" class="square square-2"></div>
+                    <div id="square3" class="square square-3"></div>
+                    <div id="square4" class="square square-4"></div>
+                    <div id="square5" class="square square-5"></div>
+                    <div id="square6" class="square square-6"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

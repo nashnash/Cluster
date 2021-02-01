@@ -1,0 +1,81 @@
+{% extends 'base-front.html.twig' %}
+
+{% block subtitle %}Connexion{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('front') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('front') }}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="wrapper">
+        <div class="page-header">
+            <div class="page-header-image"></div>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 offset-md-3">
+                            <div id="square7" class="square square-7"></div>
+                            <div id="square8" class="square square-8"></div>
+                            <div class="card card-register">
+                                <form method="post">
+
+                                    <div class="card-header">
+                                        <img class="card-img" src="{{ asset('build/images/square1.png') }}"
+                                             alt="Card image">
+                                        <h4 class="card-title text-center">Se connecter</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if error %}
+                                            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                        {% endif %}
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="tim-icons icon-single-02"></i>
+                                                </div>
+                                            </div>
+                                            <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                                                   class="form-control" required placeholder="email@email.com"
+                                                   autofocus>
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="tim-icons icon-single-02"></i>
+                                                </div>
+                                            </div>
+                                            <input type="password" name="password" id="inputPassword"
+                                                   placeholder="*****"
+                                                   class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <input type="submit" value="Nous rejoindre"
+                                               class="btn btn-info btn-round btn-lg">
+                                    </div>
+                                    <input type="hidden" name="_csrf_token"
+                                           value="{{ csrf_token('authenticate') }}"
+                                    >
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="register-bg"></div>
+                    <div id="square1" class="square square-1"></div>
+                    <div id="square2" class="square square-2"></div>
+                    <div id="square3" class="square square-3"></div>
+                    <div id="square4" class="square square-4"></div>
+                    <div id="square5" class="square square-5"></div>
+                    <div id="square6" class="square square-6"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

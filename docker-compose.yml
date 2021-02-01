@@ -1,0 +1,73 @@
+version: '3.6'
+x-cache-from:
+  - &app-cache-from
+    cache_from:
+      - ${NGINX_IMAGE:-iw/nginx}
+      - ${PHP_IMAGE:-iw/php}
+  - &node-cache-from
+    cache_from:
+      - ${NODE_IMAGE:-iw/node}
+
+services:
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: cluster
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: cluster
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  php:
+    image: ${PHP_IMAGE:-iw/php}
+    build:
+      context: ""
+      target: app_php
+      <<: *app-cache-from
+    volumes:
+      - ./:/srv/app:rw
+      - ./docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      #- app-front:/srv/app/public/build
+      - app-sf-cache:/srv/app/var
+
+  nginx:
+    image: ${NGINX_IMAGE:-iw/nginx}
+    build:
+      context: ""
+      target: app_nginx
+      <<: *app-cache-from
+    depends_on:
+      - php
+      - node
+    volumes:
+      - ./public:/srv/app/public:ro
+      #- app-front:/srv/app/public/build:ro
+    ports:
+      - "8082:80"
+
+  node:
+    image: ${NODE_IMAGE:-iw/node}
+    build:
+      context: ""
+      dockerfile: Dockerfile.node
+      <<: *node-cache-from
+    command: sh -c "yarn install; yarn watch"
+    working_dir: /home/node/app
+    depends_on:
+      - php
+    volumes:
+      - ./:/home/node/app
+  mail:
+    image: djfarrelly/maildev
+    ports:
+    - 1080:80
+    - 1025:25
+
+volumes:
+  db-data: { }
+  app-sf-cache: { }
+  app-front: { }

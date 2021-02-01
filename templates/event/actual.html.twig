@@ -1,0 +1,26 @@
+{% extends 'base-dashboard.html.twig' %}
+
+{% block subtitle %}Evenements dans le passé{% endblock %}
+
+{% block content %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Date de l'evenement</th>
+            <th>Nombre de participants</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.name }}</td>
+                <td>{{ event.datestart|date('d/m/Y') }}</td>
+                <td>{{ event.participants|length }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event{% endblock %}
+
+{% block body %}
+    <h1>Evenement {{ event.getName() }}</h1>
+
+    <table class="table">
+        <tbody>
+
+        <tr>
+            <th>Nom</th>
+            <td>{{ event.name }}</td>
+
+        <tr>
+            <th>Date/Heure de début</th>
+            <td>{{ event.dateStart ? event.dateStart|date('d/m/Y H:i') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Date/Heure de fin</th>
+            <td>{{ event.dateEnd ? event.dateEnd|date('d/m/Y H:i') : '' }}</td>
+        </tr>
+
+        <tr>
+            <th>Lieu</th>
+            <td>{{ event.location }}</td>
+        </tr>
+        <tr>
+
+            <th>Description</th>
+            <td>{{ event.description }}</td>
+        </tr>
+        <tr>
+            <th>Capacité</th>
+            <td>{{ event.nbParticipants }}</td>
+        </tr>
+
+        <tr>
+            <th>Prix</th>
+            <td>{{ event.price }} €</td>
+        </tr>
+
+        <tr>
+            <th>Restriction(s)</th>
+            {% for resctriction in event.restrictions %}
+                <td>{{ resctriction.getName() }},</td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <th>Status</th>
+            <td>{{ event.status }}</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    {% if event.user == app.user %}
+        <hr>
+        <h2>Liste des participants</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Nom Prénom</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for participant in event.participants %}
+                <tr>
+                    <td>{{ participant.firstname|capitalize }} {{ participant.lastname|upper }}</td>
+                    <td><a href="{{ path('event_remove_participant', {id:event.id, id_user: participant.id }) }}">Supprimer la
+                            réservation</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <a href="{{ path('event_index') }}">back to list</a>
+
+    <a href="{{ path('event_edit', {'id': event.id}) }}">edit</a>
+
+    {{ include('event/_delete_form.html.twig') }}
+{% endblock %}

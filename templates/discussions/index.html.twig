@@ -1,0 +1,186 @@
+{% extends 'base-dashboard.html.twig' %}
+
+{% block subtitle %}Messagerie{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('chat') }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="d-flex flex-row justify-content-end">
+        <div class="alerts">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert fade fadeInDown show alert-dismissible alert-{{ label }}"
+                         role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>{{ message }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="pt-3 px-4">
+        <div class="row rounded-lg overflow-hidden shadow">
+            <!-- Users box-->
+            <div class="col-md-5 d-xs-none px-0">
+                <div class="bg-white">
+                    <div class="bg-gray px-4 py-2 bg-light d-flex flex-row justify-content-between">
+                        <p class="h5 mb-0 py-1">Mes conversations</p>
+                        <span id="createConversation" data-toggle="modal" data-target="#createDiscussionModal"><i
+                                    class="fas fa-edit fa-2x"></i></span>
+                    </div>
+                    <div class="messages-box">
+                        <div class="list-group rounded-0">
+                            {% for key, conversation in conversations %}
+                                <a href="{{ path('discussions',{id:conversation.id}) }}"
+                                   class="list-group-item list-group-item-action {% if app.request.get('id') == conversation.id or activeConversation == conversation %} active {% else %} bg-light text-dark {% endif %} text-white rounded-0">
+                                    <div class="media">
+                                        <div class="media-body ml-4">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <h6 class="mb-0"> {% if conversation.owner == app.user %} <i
+                                                            class="fas fa-bolt"></i> {% endif %} {{ conversation.name }}
+                                                </h6>
+                                                <small class="small font-weight-bold">{% if conversation.messages|length > 0 %} {{ conversation.messages[conversation.messages|length - 1].createdat|format_datetime(locale='fr', pattern="dd LLLL r H:mm") }} {% else %} Vide {% endif %}</small>
+                                            </div>
+                                            <p class="font-italic mb-0 text-small">{% if conversation.messages|length > 0 %}  {{ conversation.messages[conversation.messages|length - 1].message }} {% else %} Vide {% endif %}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Chat Box-->
+            <div class="col-md-7 px-0">
+                <div class="bg-gray px-4 py-2 bg-light border-left d-flex flex-row justify-content-between">
+                    {{ activeConversation.name }}
+                    <span id="showInfos" data-toggle="modal" data-target="#moreInformationModal"><i
+                                class="fa fa-info-circle fa-2x"></i></span>
+                </div>
+                <div class="px-4 py-5 chat-box bg-white">
+                    {% for message in activeConversation.messages %}
+                        <!-- Sender Message-->
+                        <div class="media {% if message.user == app.user %} ml-auto {% endif %} w-50 mb-3">
+                            <div class="media-body ml-3">
+                                <h6 class="mt-0">{{ message.user.firstname|capitalize }} {{ message.user.lastname|upper }}</h6>
+                                <div class="bg-light rounded py-2 px-3 mb-2">
+                                    <p class="text-small mb-0 text-muted">{{ message.message|nl2br }}</p>
+                                </div>
+                                <p class="small text-muted">{{ message.createdat|format_datetime(locale='fr', pattern="eeee dd LLLL r - HH:mm") }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Typing area -->
+                {{ form_start(formMessage) }}
+                <div class="input-group">
+                    {{ form_widget(formMessage.message) }}
+                    <div class="input-group-append">
+                        {{ form_widget(formMessage.submit) }}
+                    </div>
+                </div>
+                {{ form_end(formMessage) }}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="createDiscussionModal" role="dialog" tabindex='-1'>
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="flex-column">
+                        <h4 class="modal-title">Créer une conversation</h4>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(formNewDiscussion) }}
+                    <div class="form-group">
+                        {{ form_row(formNewDiscussion.name) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(formNewDiscussion.participants) }}
+                        <small id="participantsHelp" class="form-text text-muted">Séléctionner au moins 1 ami</small>
+                    </div>
+                    {{ form_end(formNewDiscussion) }}
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="moreInformationModal" role="dialog" tabindex='-1'>
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="flex-column">
+                        <h4 class="modal-title">{{ activeConversation.name }}</h4>
+                        {% if activeConversation.messages|length > 0 %}
+                            <small>Dernier message
+                                le {{ activeConversation.messages[activeConversation.messages|length - 1].createdat|format_datetime(locale='fr', pattern="F LLLL r à HH:mm") }}</small>
+                        {% else %}
+                            <small>Aucune message</small>
+                        {% endif %}
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row d-flex justify-content-between px-2 py-2" id="showMembers"
+                             data-toggle="collapse" data-target="#membersCollapse" aria-expanded="false"
+                             aria-controls="membersCollapse">
+                            <span class="align-self-center">Membres</span>
+                            <span class="font-weight-light"><i class="fas fa-angle-right fa-2x"></i></span>
+                        </div>
+                    </div>
+                    <div class="collapse" id="membersCollapse">
+                        <button class="btn btn-outline-primary" id="addMember">Ajouter un
+                            membre
+                        </button>
+                        <table class="table">
+                            <tbody class="text-center">
+                            {% for member in activeConversation.participants %}
+                                <tr>
+                                    <td>{{ member.firstname|capitalize }} {{ member.lastname|upper }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addMemberModal" role="dialog" tabindex='-1'>
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="flex-column">
+                        <h6 class="modal-title">Ajouter un ami à la conversation</h6>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    {{ form(formAddFriend) }}
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('chat') }}
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block subtitle %}Evenements à + 10 jours{% endblock %}
+
+{% block body %}
+    {% for event in events %}
+        <h1>Les Evenements de {{ event.getUser().getFirstName() }}
+            {{ event.getUser().getLastName() }}</h1>
+
+        <table class="table">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Date/Heure de début</th>
+            <th>Date/Heure de fin</th>
+            <th>Lieu</th>
+            <th>Description</th>
+            <th>Places restantes</th>
+            <th>Prix</th>
+            <th>Status</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <td>{{ event.name }}</td>
+            <td>{{ event.dateStart ? event.dateStart|date('d/m/Y H:i') : '' }}</td>
+            <td>{{ event.dateEnd ? event.dateEnd|date('d/m/Y H:i') : '' }}</td>
+            <td><a target="_blank"
+                   href="https://maps.google.fr/?q={{ event.location|replace({' ':'+'}) }}">{{ event.location }}</a>
+            </td>
+            <td>{{ event.description|nl2br }}</td>
+            <td>{{ event.nbParticipants - event.participants|length }}</td>
+            <td>{{ event.price }} €</td>
+            <td>{{ event.status }}</td>
+            <td>
+                {% if  event.user != app.user %}
+                    {% if app.user in event.participants %}
+                        <a href="{{ path('add_calendar',{id: event.id}) }}">Ajouter au calendrier</a>
+                        <a href="{{ path('event_desiste',{id: event.id}) }}" class="btn btn-outline-danger">Se
+                            désister</a>
+                    {% else %}
+                        {% if event.nbParticipants - event.participants|length > 0 %}
+                            <a href="{{ path('event_reserve',{id: event.id}) }}" class="btn btn-outline-primary">Reserver
+                                sa
+                                place</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                <a href="{{ path('event_show', {'id': event.id}) }}">show</a>
+                <a href="{{ path('event_edit', {'id': event.id}) }}">edit</a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="13">no records found</td>
+        </tr>
+
+        </tbody>
+        </table>
+
+        <a href="{{ path('event_new') }}">Create new</a>
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

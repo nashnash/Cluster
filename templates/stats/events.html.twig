@@ -1,0 +1,42 @@
+{% extends 'base-dashboard.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xl-3 col-sm-12">
+            <div class="card border border-success">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-between">
+                        <i class="fas fa-user fa-4x align-self-center"></i>
+                        <div class="card-content text-success text-right">
+                            <h3 class="text-right font-weight-light">Nombre d'utilisateurs connectés aujourd'hui</h3>
+                            <h1>350</h1>
+                        </div>
+                    </div>
+                    <hr style="border-top: 50px dashed inherit !important">
+                    <div class="d-flex flex-row justify-content-between" style="font-size: 10px">
+                        <p>Basé sur la dernière activité</p>
+                        <i class="fas fa-chart-bar fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-12">
+            <div class="card border border-info">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-between">
+                        <i class="fas fa-calendar-alt fa-4x align-self-center"></i>
+                        <div class="card-content text-info text-right">
+                            <h3 class="text-right font-weight-light">Evènements créés aujourd'hui</h3>
+                            <h1>350</h1>
+                        </div>
+                    </div>
+                    <hr style="border-top: 50px dashed inherit !important">
+                    <div class="d-flex flex-row justify-content-between" style="font-size: 10px">
+                        <p>Basé sur la date de création des évènements</p>
+                        <i class="fas fa-chart-bar fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

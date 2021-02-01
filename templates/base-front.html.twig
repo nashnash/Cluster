@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg fixed-top navbar-transparent " color-on-scroll="100">
+        <div class="container">
+            <div class="navbar-translate">
+                <a class="navbar-brand" href="{{ path('index') }}" rel="tooltip" target="_blank">
+                    <img src="{{ asset('build/images/logo.png') }}" width="40%" alt="Circle image" class="img-fluid">
+                </a>
+                <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navigation" aria-controls="navigation-index" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-bar bar1"></span>
+                    <span class="navbar-toggler-bar bar2"></span>
+                    <span class="navbar-toggler-bar bar3"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                <div class="navbar-collapse-header">
+                    <div class="row">
+                        <div class="col-6 collapse-brand">
+                            <a>
+                                CLUSTER
+                            </a>
+                        </div>
+                        <div class="col-6 collapse-close text-right">
+                            <button type="button" class="navbar-toggler" data-toggle="collapse"
+                                    data-target="#navigation" aria-controls="navigation-index" aria-expanded="false"
+                                    aria-label="Toggle navigation">
+                                <i class="tim-icons icon-simple-remove"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary btn-simple" href="{{ path('aboutus') }}">Qui sommes-nous ?</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary btn-simple" href="{{ path('app_login') }}">Se connecter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary btn-simple" href="{{ path('app_register_user') }}">S'inscrire</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary btn-simple" href="{{ path('app_register_pro') }}">Je suis un PRO</a>
+                    </li>
+                    {% if app.user  %}
+                    <li class="nav-item btn btn-danger btn-simple">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Deconnexion</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 style="text-align: center" class="title">CLUSTER•</h1>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
