@@ -20,9 +20,13 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-4 editLeft">
-                        <img class="rounded-circle profile-avatar" height="200px" width="200px" src="{{ asset('images/users/'~user.imageName) }}" alt="Card image cap">
-                        <h2 class="editName">{{ user.firstname }} {{ user.firstname }}</h2>
-                        <h3>{{ user.email }}</h3>
+                        {% if user.imageName %}
+                            <img class="rounded-circle profile-avatar" height="200px" width="200px" src="{{ asset('images/users/'~user.imageName) }}" alt="Card image cap">
+                            {% else %}
+                                <img class="rounded-circle profile-avatar" height="200px" width="200px" src="{{ asset('images/users/user-image.jpg') }}" alt="Card image cap">
+                        {% endif %}
+                        <h2 class="editName">{{ user.firstname }} {{ user.lastname }}</h2>
+                        <h4>{{ user.email }}</h4>
                     </div>
                     <div class="col-md-8 editRight">
                         <h2>Profile Edit</h2>
