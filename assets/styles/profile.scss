@@ -1,0 +1,50 @@
+.profileBody{
+  position: relative;
+  padding-top: 10%
+}
+.blueCard{
+  padding-bottom: 5%;
+  margin-bottom:5%;
+  position: relative;
+  background-color: #171941;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.imageDiv{
+  height: 200px;
+  text-align: center;
+  margin-top: -5%
+}
+.fullName{
+  text-align: center
+}
+.tableContainer{
+  height: 100%;
+  margin-top: 5%
+}
+.accountState{
+  font-size: 20px
+}
+.profile-avatar {
+  position: relative;
+  margin-top: 3%;
+  border: 4px solid #f3f3f3;
+}
+.editBody{
+  padding: 5%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.editName{
+  margin-top: 15px;
+  margin-bottom: 10px
+}
+.editLeft{
+  text-align: center;
+  padding-top: 8%
+}
+.editRight{
+  border-left: 1px solid whitesmoke;
+  padding-left: 4%
+}
+.editContainer{
+  padding-top: 6%
+}
