@@ -140,7 +140,7 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="participants")
      */
     private $events;
-  
+     /**
      * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="participants")
      */
     private $conversations;

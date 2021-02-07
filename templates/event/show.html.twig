@@ -40,12 +40,14 @@
             <td>{{ event.price }} €</td>
         </tr>
 
+        {% for resctriction in event.restrictions %}
         <tr>
             <th>Restriction(s)</th>
-            {% for resctriction in event.restrictions %}
-                <td>{{ resctriction.getName() }},</td>
-            {% endfor %}
+
+                <td>{{ resctriction.getName() }}</td>
+
         </tr>
+        {% endfor %}
 
         <tr>
             <th>Status</th>
@@ -58,10 +60,10 @@
     {% if event.user == app.user %}
         <hr>
         <h2>Liste des participants</h2>
-        <table>
+        <table class="table">
             <thead>
             <tr>
-                <th>Nom Prénom</th>
+                <th> Prénom Nom</th>
                 <th></th>
             </tr>
             </thead>
@@ -69,7 +71,7 @@
             {% for participant in event.participants %}
                 <tr>
                     <td>{{ participant.firstname|capitalize }} {{ participant.lastname|upper }}</td>
-                    <td><a href="{{ path('event_remove_participant', {id:event.id, id_user: participant.id }) }}">Supprimer la
+                    <td><a href="{{ path('event_remove_participant', {id:event.id, id_user: participant.id }) }}"class="btn btn-outline-primary">Supprimer la
                             réservation</a>
                     </td>
                 </tr>
@@ -78,9 +80,15 @@
         </table>
     {% endif %}
 
-    <a href="{{ path('event_index') }}">back to list</a>
+    <a href="{{ path('event_index') }}"class="btn btn-outline-primary">back to list</a>
 
-    <a href="{{ path('event_edit', {'id': event.id}) }}">edit</a>
+    {% if event.user == app.user %}
+        {% if event.user.roles != 'ROLE_USER' %}
 
-    {{ include('event/_delete_form.html.twig') }}
+            <a href="{{ path('event_edit', {'id': event.id}) }}"class="btn btn-outline-primary">edit</a>
+
+            {{ include('event/_delete_form.html.twig') }}
+
+        {% endif %}
+    {% endif %}
 {% endblock %}

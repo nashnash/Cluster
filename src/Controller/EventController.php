@@ -32,6 +32,8 @@ class EventController extends AbstractController
      */
     public function index(EventRepository $eventRepository): Response
     {
+        //dd($eventRepository->findNext10DaysEvents());
+
         return $this->render('event/index.html.twig', [
             'events' => $eventRepository->findNext10DaysEvents()
         ]);
@@ -52,7 +54,7 @@ class EventController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
 
             $event->setUser($this->getUser());
-            $event->setStatus("Open");
+            $event->setStatus("Pending");
 
             $entityManager->persist($event);
             $entityManager->flush();
@@ -102,6 +104,8 @@ class EventController extends AbstractController
      */
     public function show(Event $event): Response
     {
+
+
         return $this->render('event/show.html.twig', [
             'event' => $event
         ]);

@@ -2,10 +2,22 @@
 
 {% block subtitle %}Evenements à + 10 jours{% endblock %}
 
+ {% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('front') }}
+
+{% endblock %}
+
+{#  {% block javascripts %}
+    {{ parent() }}
+
+    {{ encore_entry_script_tags('event') }}
+
+{% endblock %} #}
+
 {% block body %}
-    {% for event in events %}
-        <h1>Les Evenements de {{ event.getUser().getFirstName() }}
-            {{ event.getUser().getLastName() }}</h1>
+
+        <h1>Les Événements des dix prochains jours</h1>
 
         <table class="table">
         <thead>
@@ -22,7 +34,7 @@
         </tr>
         </thead>
         <tbody>
-
+        {% for event in events %}
         <tr>
             <td>{{ event.name }}</td>
             <td>{{ event.dateStart ? event.dateStart|date('d/m/Y H:i') : '' }}</td>
@@ -48,24 +60,39 @@
                         {% endif %}
                     {% endif %}
                 {% endif %}
-                <a href="{{ path('event_show', {'id': event.id}) }}">show</a>
-                <a href="{{ path('event_edit', {'id': event.id}) }}">edit</a>
+
+
+                <a href="{{ path('event_show', {'id': event.id}) }}" class="btn btn-outline-primary">show</a>
+
+                {% if event.user == app.user %}
+
+                    {% if event.user.roles != 'ROLE_USER' %}
+
+                        <a href="{{ path('event_edit', {'id': event.id}) }}"class="btn btn-outline-primary">edit</a>
+
+                    {% endif %}
+                {% endif %}
             </td>
         </tr>
+
     {% else %}
         <tr>
             <td colspan="13">no records found</td>
         </tr>
+        {% endfor %}
 
         </tbody>
         </table>
 
-        <a href="{{ path('event_new') }}">Create new</a>
-    {% endfor %}
+    {% if "ROLE_PRO" in app.user.roles %}
+        <a href="{{ path('event_new') }}"class="btn btn-outline-primary">Create new</a>
+    {% endif%}
+
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('utils_geoloc') }}
-    {{ encore_entry_script_tags('test') }}
+ {# {{ encore_entry_script_tags('utils_geoloc') }}
+    {{ encore_entry_script_tags('test') }} #}
+    {{ encore_entry_script_tags('front') }}
 {% endblock %}
