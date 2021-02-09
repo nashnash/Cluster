@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('allEvents') }}
+{% endblock %}
+
+
+{% block body %}
+
+
+    <div class="wrapper wrapperBody">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="container-fluid containerBody">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><a href="{{ path('all_events') }}"  class="previous">&laquo; Listes des évenements</a></p>
+                                {% if event.eventPictures|length > 0 and event.eventPictures|length == 1%}
+                                    <div class="container-fluid indexImageContainer">
+                                        <div class="row">
+                                            <img src="{{ event.eventPictures[0].urlImage }}" class="twoImage" alt="">
+                                        </div>
+                                    </div>
+                                {% elseif event.eventPictures|length > 0 and event.eventPictures|length == 2%}
+                                    <div class="container-fluid indexImageContainer">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <img src="{{ event.eventPictures[0].urlImage }}" class="twoImage" alt="">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <img src="{{ event.eventPictures[1].urlImage }}"  class="twoImage" alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif event.eventPictures|length > 0 and event.eventPictures|length > 2%}
+                                    <div class="container-fluid indexImageContainer">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <img src="{{ event.eventPictures[0].urlImage }}" class="twoImage" alt="">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="smallImageDiv">
+                                                    <img src="{{ event.eventPictures[1].urlImage }}"  class="smallImage" alt="">
+                                                </div>
+                                                <div class="smallImageDiv">
+                                                    <img src="{{ event.eventPictures[2].urlImage }}"  class="smallImage marginImage" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="datailsName">{{ event.name }}</p>
+                                            <p class="detailsPrice">{{ event.price }} €</p>
+                                            <p class="detailsLocation">{{ event.location }}</p>
+                                            {% if "now"|date('Y-m-d') == event.dateStart|date('Y-m-d')  %}
+                                                <p>Début: Aujourd' hui à {{ event.dateStart |date('H:i:s') }}</p>
+                                            {% else%}
+                                                <p>Début: {{ event.dateStart |date('Y-m-d') }} à {{ event.dateStart |date('H:i:s') }}</p>
+                                            {% endif %}
+
+                                            {% if "now"|date('Y-m-d') == event.dateEnd|date('Y-m-d')  %}
+                                                <p>Fin: Aujourd' hui à {{ event.dateEnd |date('H:i:s') }}</p>
+                                            {% else%}
+                                                <p>Fin: {{ event.dateEnd |date('Y-m-d') }} à {{ event.dateEnd|date('H:i:s') }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 description">
+                                            <h3>Description</h3>
+                                                <p>{{ event.description }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 description">
+                                            <h3>Restrictions</h3>
+
+                                            {% if event.restrictions| length >0 %}
+                                                    <ul>
+                                                {% for restriction in event.restrictions%}
+                                                    <li> {{ restriction.name}} </li>
+                                                {% endfor %}
+                                                    </ul>
+                                            {% else%}
+                                                <p>Pas de restriction</p>
+                                            {% endif %}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card rightDiv">
+                                    <div class="card-title">
+                                        <div class="container-fluid">
+                                            <div class="row organizerRow">
+                                                <div class="col-md-11">
+                                                    <h3>Organiser par:</h3>
+                                                </div>
+                                            </div>
+                                            <div class="row" >
+                                                <div class="col-md-4">
+                                                    <img src="http://placehold.it/120x120&text=image2" alt="" class="rounded-circle">
+                                                </div>
+                                                <div class="col-md-8 orgarnizeName">
+                                                    <h3>{{ event.user.lastname|capitalize }} {{ event.user.firstname }}</h3>
+                                                </div>
+                                            </div>
+                                            <div class="row organizeAddress" >
+                                                <p>Contact: {{ event.user.email }}</p>
+                                                <p>Nombres de participants : {{ event.NbParticipants }}</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="card-body backLine">
+
+                                        <a href="#" class="btn btn-primary">S'inscrire</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('allEvents') }}
+        {{ parent() }}
+    {% endblock %}
+
+{% endblock %}

@@ -1,0 +1,121 @@
+.containerBody{
+ margin-top: 5%;
+  margin-bottom: 10%;
+}
+.block{
+  height: 250px;
+  margin-bottom: 10px;
+  margin-top: 30px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.picturesCard{
+  border-radius: 15px;
+}
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.carousel-inner img {
+  width: 100%;
+  height: 250px;
+}
+
+.textCard{
+  padding-left: 2%;
+  padding-top: 2%;
+  padding-right: 1%;
+  cursor: pointer;
+}
+.name{
+  font-size: 2rem;
+}
+
+.datailsName{
+  font-size: 2rem;
+}
+
+.detailsLocation{
+  font-size: 1rem;
+  margin-bottom: 3%;
+}
+
+.description{
+  padding-top: 4%;
+  border-top: 1px solid ;
+  margin-top: 5%;
+}
+
+.detailsPrice{
+  color: #e14eca;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.name:hover{
+  color: #e14eca;
+}
+
+.price{
+  margin-bottom: 3%;
+  color: #e14eca;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.otherText{
+  font-size: 1rem;
+}
+
+.indexImageContainer{
+height: 400px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+
+}
+
+.twoImage{
+  width: 100%;
+  height: 400px
+}
+
+.smallImageDiv{
+  height: 200px
+}
+
+.smallImage{
+  width: 100%;
+  height: 190px
+}
+
+.marginImage{
+  margin-top: 10px
+}
+
+#more{
+  display: none;
+}
+
+.rightDiv{
+  width: 20rem;
+  margin-left: 2rem;
+  margin-top: 5rem
+}
+
+.organizerRow{
+  padding-top: 2rem
+}
+
+.orgarnizeName{
+  margin-top: 1rem;
+}
+
+.organizeAddress{
+  margin-top: 2rem;
+  margin-left: 1rem
+}
+
+.backLine{
+  text-align: center;
+  border-top: 1px solid
+}

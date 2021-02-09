@@ -124,6 +124,11 @@ class Event
      */
     private $participants;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EventPictures::class, mappedBy="id_event")
+     */
+    private $eventPictures;
+
 
     /**
      * Event constructor.
@@ -132,6 +137,7 @@ class Event
     {
         $this->restrictions = new ArrayCollection();
         $this->participants = new ArrayCollection();
+        $this->eventPictures = new ArrayCollection();
     }
 
 
@@ -427,6 +433,36 @@ class Event
     public function removeParticipant(User $participant): self
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EventPictures[]
+     */
+    public function getEventPictures(): Collection
+    {
+        return $this->eventPictures;
+    }
+
+    public function addEventPicture(EventPictures $eventPicture): self
+    {
+        if (!$this->eventPictures->contains($eventPicture)) {
+            $this->eventPictures[] = $eventPicture;
+            $eventPicture->setIdEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventPicture(EventPictures $eventPicture): self
+    {
+        if ($this->eventPictures->removeElement($eventPicture)) {
+            // set the owning side to null (unless already changed)
+            if ($eventPicture->getIdEvent() === $this) {
+                $eventPicture->setIdEvent(null);
+            }
+        }
 
         return $this;
     }

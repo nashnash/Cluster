@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use \Datetime;
 
 /**
  * @method Event|null find($id, $lockMode = null, $lockVersion = null)
@@ -92,5 +93,18 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('user', $user->getId())
             ->getQuery()
             ->getResult();
+    }
+
+    public function getCurrentActiveEvents()
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.date_end > :val')
+            ->setParameter('val', new Datetime())
+            ->andWhere('e.status = :status')
+            ->setParameter('status', "Open")
+            ->orderBy('e.created_at', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
     }
 }
