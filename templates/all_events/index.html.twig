@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('allEvents') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('allEvents') }}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+
+    <div class="wrapper wrapperBody">
+
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="container-fluid containerBody" >
+                        <h1>Evennements en cours</h1>
+                        {% for event in events %}
+                            <div class="row block" >
+
+                                {% if event.eventPictures|length > 0 %}
+
+                                    <div id="{{ event.slug }}" class="col-md-5 picturesCard nopadding carousel slide mt-0" data-ride="carousel" >
+                                        <ol class="carousel-indicators">
+                                            {% for picutre in event.eventPictures %}
+                                                <li data-target="#{{ event.slug }}" data-slide-to="{{ loop.index-1 }}" class="{{ loop.first ? 'active': '' }} "></li>
+                                            {% endfor %}
+                                        </ol>
+
+                                        <div class="carousel-inner">
+                                            {% for picture in event.eventPictures %}
+                                                <div class="carousel-item {{ loop.first ? 'active': '' }} ">
+                                                    <img src="{{ picture.urlImage }}" class="d-block img-fluid" alt="">
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+                                        <a class="carousel-control-prev" href="#{{ event.slug }}" role="button" data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#{{ event.slug }}" role="button" data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>
+
+                                {% else %}
+                                    <div class="col-md-5 picturesCard nopadding" >
+                                        <img src="http://placehold.it/120x120&text=image5" height="250px"  width="100%" alt="">
+                                    </div>
+                                {% endif %}
+
+                                <div class="col-md-7 textCard" onclick="location.href='{{ path('details_event', {slug: event.slug}) }}'">
+                                    <p class="name">{{ event.name }}</p>
+                                    <p class="price">{{ event.price }} €</p>
+                                    <p class="otherText">Locations</p>
+                                    <p>{{ event.location }}</p>
+                                    {% if "now"|date('Y-m-d') == event.dateStart|date('Y-m-d')  %}
+                                        <p class="otherText">Début: Aujourd' hui à {{ event.dateStart |date('H:i:s') }}</p>
+                                    {% else%}
+                                        <p class="otherText">Début: {{ event.dateStart |date('Y-m-d') }} à {{ event.dateStart |date('H:i:s') }}</p>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {{ knp_pagination_render(events) }}
+                    </div>
+
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
