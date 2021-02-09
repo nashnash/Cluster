@@ -1,6 +1,16 @@
 {% extends 'base-front.html.twig' %}
 
-{% block title %}New promote event{% endblock %}
+{% block title %}Promouvoir cette évenement{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('front') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('front') }}
+    {{ parent() }}
+{% endblock %}
 
 {% block body %}
 
@@ -8,7 +18,7 @@
 
     {{ form_start(form) }}
     {{ form_rest(form) }}
-    <input type="submit" class="btn btn-outline-primary" value="Valider">
+    <input type="submit" class="btn btn-outline-primary" value="Valider" >
     {{ form_end(form) }}
     <a href="{{ path('event_index') }}"class="btn btn-outline-primary">back to list events</a>
 

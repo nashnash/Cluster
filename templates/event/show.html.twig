@@ -1,11 +1,21 @@
-{% extends 'base.html.twig' %}
+{% extends 'base-front.html.twig' %}
 
 {% block title %}Event{% endblock %}
+
+ {% block stylesheets %}
+     {{ parent() }}
+     {{ encore_entry_link_tags('front') }}
+ {% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('front') }}
+    {{ parent() }}
+{% endblock %}
 
 {% block body %}
     <h1>Evenement {{ event.getName() }}</h1>
 
-    <table class="table">
+    <table class="table" style="color: #f9f9f9;">
         <tbody>
 
         <tr>
@@ -60,7 +70,7 @@
     {% if event.user == app.user %}
         <hr>
         <h2>Liste des participants</h2>
-        <table class="table">
+        <table class="table" >
             <thead>
             <tr>
                 <th>Prénom</th>

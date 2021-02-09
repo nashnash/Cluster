@@ -1,5 +1,15 @@
 {% extends 'base-front.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('front') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('front') }}
+    {{ parent() }}
+{% endblock %}
+
 {% block title %}New Event{% endblock %}
 
 {% block body %}

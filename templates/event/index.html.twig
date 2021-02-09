@@ -1,19 +1,16 @@
-{% extends 'base.html.twig' %}
+{% extends 'base-front.html.twig' %}
 
 {% block subtitle %}Evenements à + 10 jours{% endblock %}
 
  {% block stylesheets %}
-    {{ parent() }}
+     {{ parent() }}
+     {{ encore_entry_link_tags('front') }}
+ {% endblock %}
+
+{% block javascripts %}
     {{ encore_entry_script_tags('front') }}
-
-{% endblock %}
-
-{#  {% block javascripts %}
     {{ parent() }}
-
-    {{ encore_entry_script_tags('event') }}
-
-{% endblock %} #}
+{% endblock %}
 
 {% block body %}
 
@@ -108,11 +105,11 @@
             <tbody>
         {% for allEventsByTopList in eventsTopList%}
                 <tr>
-                    <th>{{ allEventsByTopList.name }}</th>
-                    <th>{{ allEventsByTopList.user.firstname|capitalize }} {{ allEventsByTopList.user.lastname|upper }}</th>
+                    <th style="color: #f9f9f9;">{{ allEventsByTopList.name }}</th>
+                    <th style="color: #f9f9f9;">{{ allEventsByTopList.user.firstname|capitalize }} {{ allEventsByTopList.user.lastname|upper }}</th>
 
                     {% for bid in allEventsByTopList.bids%}
-                        <th>{{ bid.capital }}</th>
+                        <th style="color: #f9f9f9;">{{ bid.capital }} €</th>
                     {% endfor%}
                 </tr>
         {% endfor%}
@@ -122,9 +119,9 @@
     {% endif%}
 {% endblock %}
 
-{% block javascripts %}
+{# {% block javascripts %}
     {{ parent() }}
- {# {{ encore_entry_script_tags('utils_geoloc') }}
-    {{ encore_entry_script_tags('test') }} #}
+ {{ encore_entry_script_tags('utils_geoloc') }}
+    {{ encore_entry_script_tags('test') }}
     {{ encore_entry_script_tags('front') }}
-{% endblock %}
+{% endblock %}#}
