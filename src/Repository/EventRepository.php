@@ -93,4 +93,19 @@ class EventRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function getEventsProByTopList()
+    {
+        return $this->createQueryBuilder('e')
+            ->from("App\Entity\Bid","b")
+            ->from("App\Entity\User","u")
+            ->where('b.event = e.id')
+            ->andWhere("b.professional = u.id")
+            ->orderBy('b.capital', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -63,14 +63,16 @@
         <table class="table">
             <thead>
             <tr>
-                <th> Prénom Nom</th>
-                <th></th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
             {% for participant in event.participants %}
                 <tr>
-                    <td>{{ participant.firstname|capitalize }} {{ participant.lastname|upper }}</td>
+                    <td>{{ participant.firstname|capitalize }}</td>
+                    <td>{{ participant.lastname|upper }}</td>
                     <td><a href="{{ path('event_remove_participant', {id:event.id, id_user: participant.id }) }}"class="btn btn-outline-primary">Supprimer la
                             réservation</a>
                     </td>

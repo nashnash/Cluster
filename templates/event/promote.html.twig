@@ -1,0 +1,15 @@
+{% extends 'base-front.html.twig' %}
+
+{% block title %}New promote event{% endblock %}
+
+{% block body %}
+
+    <h1>promote this Event</h1>
+
+    {{ form_start(form) }}
+    {{ form_rest(form) }}
+    <input type="submit" class="btn btn-outline-primary" value="Valider">
+    {{ form_end(form) }}
+    <a href="{{ path('event_index') }}"class="btn btn-outline-primary">back to list events</a>
+
+{% endblock %}

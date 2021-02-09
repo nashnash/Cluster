@@ -31,6 +31,7 @@ class User implements UserInterface
         $this->conversations = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->friends = new ArrayCollection();
+        $this->bids = new ArrayCollection();
     }
 
     /**
@@ -159,6 +160,11 @@ class User implements UserInterface
      * )
      */
     private $friends;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Bid::class, mappedBy="professional")
+     */
+    private $bids;
 
     /**
      * @return int|null
@@ -638,4 +644,36 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection|Bid[]
+     */
+    public function getBids(): Collection
+    {
+        return $this->bids;
+    }
+
+    public function addBid(Bid $bid): self
+    {
+        if (!$this->bids->contains($bid)) {
+            $this->bids[] = $bid;
+            $bid->setProfessional($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBid(Bid $bid): self
+    {
+        if ($this->bids->removeElement($bid)) {
+            // set the owning side to null (unless already changed)
+            if ($bid->getProfessional() === $this) {
+                $bid->setProfessional(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

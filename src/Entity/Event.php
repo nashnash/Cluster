@@ -124,6 +124,10 @@ class Event
      */
     private $participants;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Bid::class, mappedBy="event")
+     */
+    private $bids;
 
     /**
      * Event constructor.
@@ -132,6 +136,7 @@ class Event
     {
         $this->restrictions = new ArrayCollection();
         $this->participants = new ArrayCollection();
+        $this->bids = new ArrayCollection();
     }
 
 
@@ -427,6 +432,36 @@ class Event
     public function removeParticipant(User $participant): self
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Bid[]
+     */
+    public function getBids(): Collection
+    {
+        return $this->bids;
+    }
+
+    public function addBid(Bid $bid): self
+    {
+        if (!$this->bids->contains($bid)) {
+            $this->bids[] = $bid;
+            $bid->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBid(Bid $bid): self
+    {
+        if ($this->bids->removeElement($bid)) {
+            // set the owning side to null (unless already changed)
+            if ($bid->getEvent() === $this) {
+                $bid->setEvent(null);
+            }
+        }
 
         return $this;
     }

@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Form\EventType;
+use App\Entity\Bid;
+use App\Form\BidType;
+use App\Repository\BidRepository;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use Eluceo\iCal\Component\Calendar;
@@ -19,6 +22,8 @@ use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 /**
  * @Route("/dashboard/events")
@@ -32,10 +37,10 @@ class EventController extends AbstractController
      */
     public function index(EventRepository $eventRepository): Response
     {
-        //dd($eventRepository->findNext10DaysEvents());
 
         return $this->render('event/index.html.twig', [
-            'events' => $eventRepository->findNext10DaysEvents()
+            'events' => $eventRepository->findNext10DaysEvents(),
+            'eventsTopList' => $eventRepository->getEventsProByTopList()
         ]);
     }
 
@@ -104,7 +109,6 @@ class EventController extends AbstractController
      */
     public function show(Event $event): Response
     {
-
 
         return $this->render('event/show.html.twig', [
             'event' => $event
@@ -222,4 +226,68 @@ class EventController extends AbstractController
     {
         return $this->render('event/stats.html.twig', []);
     }
+
+    /**
+     * @Route("/promote/{id}", name="event_new_promote", methods={"GET","POST"})
+     * @param Request $request
+     * @param Event $event
+     * @param BidRepository $bidRepository
+     * @return Response
+     */
+    public function promoteNewEvent(Request $request, Event $event, BidRepository $bidRepository): Response
+    {
+        $bid = new Bid();
+
+        $form = $this->createForm(BidType::class, $bid);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $bid->setProfessional($this->getUser())
+                ->setEvent($event)
+                ->setCreatedAt(new \DateTime());
+            // $currentBid->setCapital($form->getData()->getCapital());
+            $entityManager->persist($bid);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('event_index');
+        }
+
+        return $this->render('event/promote.html.twig', [
+            'bid' => $bid,
+            'form' => $form->createView(),
+        ]);
+    }
+
+/**
+ * @Route("/promote/{id}/edit", name="event_edit_promote", methods={"GET","POST"})
+ * @param Request $request
+ * @param Event $event
+ * @param BidRepository $bidRepository
+ * @return Response
+ */
+public function promoteEditEvent(Request $request, Event $event, BidRepository $bidRepository): Response
+{
+    $bid = $bidRepository->findCurrentBid($event);
+
+    $form = $this->createForm(BidType::class, $bid);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $bid->setUpdatedAt(new \DateTime());
+        $entityManager->flush();
+
+        return $this->redirectToRoute('event_index');
+    }
+
+    return $this->render('event/promote.html.twig', [
+        'bid' => $bid,
+        'form' => $form->createView(),
+    ]);
+
+    }
+
 }

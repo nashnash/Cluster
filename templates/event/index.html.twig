@@ -47,7 +47,7 @@
             <td>{{ event.price }} €</td>
             <td>{{ event.status }}</td>
             <td>
-                {% if  event.user != app.user %}
+                {% if  event.user != app.user and "ROLE_PRO" not in app.user.roles %}
                     {% if app.user in event.participants %}
                         <a href="{{ path('add_calendar',{id: event.id}) }}">Ajouter au calendrier</a>
                         <a href="{{ path('event_desiste',{id: event.id}) }}" class="btn btn-outline-danger">Se
@@ -70,6 +70,11 @@
 
                         <a href="{{ path('event_edit', {'id': event.id}) }}"class="btn btn-outline-primary">edit</a>
 
+                        {% if event.bids|length > 0%}
+                            <a href="{{ path('event_edit_promote',{'id': event.id}) }}"class="btn btn-outline-primary">promouvoir</a>
+                            {%else%}
+                                <a href="{{ path('event_new_promote',{'id': event.id}) }}"class="btn btn-outline-primary">promouvoir</a>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </td>
@@ -88,6 +93,33 @@
         <a href="{{ path('event_new') }}"class="btn btn-outline-primary">Create new</a>
     {% endif%}
 
+    {% if "ROLE_PRO" in app.user.roles %}
+        <hr>
+        <h2>Liste des évenements en top-list</h2>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>L'événement</th>
+                <th>Le professionnel</th>
+                <th>Le capital</th>
+            </tr>
+            </thead>
+            <tbody>
+        {% for allEventsByTopList in eventsTopList%}
+                <tr>
+                    <th>{{ allEventsByTopList.name }}</th>
+                    <th>{{ allEventsByTopList.user.firstname|capitalize }} {{ allEventsByTopList.user.lastname|upper }}</th>
+
+                    {% for bid in allEventsByTopList.bids%}
+                        <th>{{ bid.capital }}</th>
+                    {% endfor%}
+                </tr>
+        {% endfor%}
+            </tbody>
+        </table>
+
+    {% endif%}
 {% endblock %}
 
 {% block javascripts %}
