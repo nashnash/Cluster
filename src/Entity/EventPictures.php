@@ -11,7 +11,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @ORM\Entity(repositoryClass=EventPicturesRepository::class)
  */
-class EventsPictures
+class EventPictures
 {
 
     public function __construct()
