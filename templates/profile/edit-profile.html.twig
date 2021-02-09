@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('profile') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('profile') }}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid editContainer">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 editBody">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4 editLeft">
+                        {% if user.imageName %}
+                            <img class="rounded-circle profile-avatar" height="200px" width="200px" src="{{ asset('images/users/'~user.imageName) }}" alt="Card image cap">
+                            {% else %}
+                                <img class="rounded-circle profile-avatar" height="200px" width="200px" src="{{ asset('images/users/user-image.jpg') }}" alt="Card image cap">
+                        {% endif %}
+                        <h2 class="editName">{{ user.firstname }} {{ user.lastname }}</h2>
+                        <h4>{{ user.email }}</h4>
+                    </div>
+                    <div class="col-md-8 editRight">
+                        <h2>Profile Edit</h2>
+                        {{ form_start(form) }}
+                        <div class="form-group">
+                            <label for="uname">Firstname:</label>
+                            {{ form_widget(form.firstname) }}
+                        </div>
+                        <div class="form-group">
+                            <label for="uname">Lastname:</label>
+                            {{ form_widget(form.lastname) }}
+                        </div>
+                        <div class="form-group">
+                            <label for="uname">Email:</label>
+                            {{ form_widget(form.email) }}
+                        </div>
+                        {% if "ROLE_PRO" in user.roles %}
+                            <div class="form-group">
+                                <label for="uname">Siren:</label>
+                                {{ form_widget(form.siren) }}
+                            </div>
+                            <div class="form-group">
+                                <label for="uname">Siret:</label>
+                                {{ form_widget(form.siret) }}
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="uname">Address:</label>
+                            {{ form_widget(form.address) }}
+                        </div>
+                        <div class="form-group">
+                            <label for="uname">City:</label>
+                            {{ form_widget(form.city) }}
+                        </div>
+
+                        <input type="submit" value="Modifier" class="btn btn-info btn-round btn-lg">
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+{% endblock %}
+
