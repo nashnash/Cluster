@@ -38,6 +38,8 @@ class EventController extends AbstractController
     public function index(EventRepository $eventRepository): Response
     {
 
+
+
         return $this->render('event/index.html.twig', [
             'events' => $eventRepository->findNext10DaysEvents(),
             'eventsTopList' => $eventRepository->getEventsProByTopList()
@@ -51,6 +53,8 @@ class EventController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        //throw $this->createAccessDeniedException("Vous ne pouvez pas accéder");
+
         $event = new Event();
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
@@ -63,6 +67,8 @@ class EventController extends AbstractController
 
             $entityManager->persist($event);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Event Created');
 
             return $this->redirectToRoute('event_index');
         }
@@ -80,26 +86,27 @@ class EventController extends AbstractController
      */
     public function pastEvents(EventRepository $eventRepository): Response
     {
+
         return $this->render('event/pasts.html.twig', [
             'events' => $eventRepository->getPastEvents($this->getUser()),
         ]);
     }
 
     /**
-     * @Route("/actual",name="actual_event")
+     * @Route("/actual_future",name="actual_future_event")
      * @param EventRepository $eventRepository
      * @return Response
      */
-    public function actualEvents(EventRepository $eventRepository): Response
+    public function actualFutureEvents(EventRepository $eventRepository): Response
     {
-        return $this->render('event/actual.html.twig', [
-            'events' => $eventRepository->getActualEvents($this->getUser()),
+
+        //dd($eventRepository->getActualEvents($this->getUser()));
+
+        return $this->render('event/actual_future.html.twig', [
+            'events' => $eventRepository->getActualEtFutureEventsByPro($this->getUser()),
+           // 'events' => $eventRepository->findNext10DaysEventsByPro($this->getUser())
+
         ]);
-    }
-
-    public function inCommingEvents()
-    {
-
     }
 
     /**
@@ -110,9 +117,20 @@ class EventController extends AbstractController
     public function show(Event $event): Response
     {
 
+
+        $numberOfVisits = $event->getNumberOfVisits();
+        //if($numberOfVisits == 0){
+
+            $event->setNumberOfVisits($numberOfVisits+1);
+            $this->getDoctrine()->getManager()->flush();
+
+       // }
+
         return $this->render('event/show.html.twig', [
             'event' => $event
         ]);
+
+
     }
 
     /**
@@ -220,11 +238,63 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/stats",name="events_stats", methods={"GET"})
+     * @Route("/stats/{id}",name="event_stats", methods={"GET"})
+     * @param Request $request
+     * @param Event $event
+     * @param EventRepository $eventRepository
+     * @return Response
      */
-    public function stats()
+    public function stats(Request $request, Event $event, EventRepository $eventRepository) :Response
     {
-        return $this->render('event/stats.html.twig', []);
+
+
+
+        $nbReservation = count($eventRepository->getEventStats($event)->getParticipants());
+
+        $nbPlaceRestante = $eventRepository->getEventStats($event)->getNbParticipants();
+        $nbPlaceTotale = $nbPlaceRestante + $nbReservation ;
+
+        // Moyenne = nbParticipants / NbParticipants totale * 100
+        $moyenneParticipation = intval($nbReservation /$nbPlaceTotale * 100);
+
+        $nbPromotion = 0;
+        foreach ( $eventRepository->getEventStats($event)->getBids() as $promotion )
+            $nbPromotion = $promotion->getNbPromotion();
+
+        $prixEvent = $eventRepository->getEventStats($event)->getPrice();
+
+        $gainsAttenduEvent = 0;
+
+        $percentBeneficeEvent = 0;
+        $percentPerteEvent = 0;
+
+        $gainsObtenuEvent = $percentBeneficeEvent * $gainsAttenduEvent / 100;
+        $gainsPerduEvent= $percentPerteEvent * $gainsAttenduEvent / 100;
+
+        $nbVisitsByEvent = $eventRepository->getEventStats($event)->getNumberOfVisits();
+
+        if($prixEvent > 0){
+
+            $gainsAttenduEvent = $prixEvent * $nbPlaceTotale ;
+
+            $percentBeneficeEvent = intval($nbReservation * $prixEvent/$gainsAttenduEvent*100);
+            $percentPerteEvent = 100 - $percentBeneficeEvent;
+
+            $gainsObtenuEvent = $percentBeneficeEvent * $gainsAttenduEvent / 100;
+            $gainsPerduEvent= $percentPerteEvent * $gainsAttenduEvent / 100;
+        }
+
+        return $this->render('stats/events.html.twig', [
+            'nbReservation' => json_encode($nbReservation),
+            'MoyenneParticipation' => json_encode($moyenneParticipation),
+            'nbPromotion' => json_encode($nbPromotion),
+            'percentBeneficeEvent' => json_encode($percentBeneficeEvent),
+            'percentPerteEvent' => json_encode($percentPerteEvent),
+            'gainsAttenduEvent' => json_encode($gainsAttenduEvent),
+            'gainsObetnuEvent' => json_encode($gainsObtenuEvent),
+            'gainsPerduEvent' => json_encode($gainsPerduEvent),
+            'nbVisits' => json_encode($nbVisitsByEvent)
+        ]);
     }
 
     /**
@@ -244,7 +314,10 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
 
+            $nbPromotion = 0;
+
             $bid->setProfessional($this->getUser())
+                ->setNbPromotion($nbPromotion + 1)
                 ->setEvent($event)
                 ->setCreatedAt(new \DateTime());
             // $currentBid->setCapital($form->getData()->getCapital());
@@ -269,6 +342,8 @@ class EventController extends AbstractController
  */
 public function promoteEditEvent(Request $request, Event $event, BidRepository $bidRepository): Response
 {
+
+
     $bid = $bidRepository->findCurrentBid($event);
 
     $form = $this->createForm(BidType::class, $bid);
@@ -276,6 +351,9 @@ public function promoteEditEvent(Request $request, Event $event, BidRepository $
 
     if ($form->isSubmitted() && $form->isValid()) {
         $entityManager = $this->getDoctrine()->getManager();
+
+        $nbPromotion = $bid->getNbPromotion() + 1 ;
+        $bid->setNbPromotion($nbPromotion);
 
         $bid->setUpdatedAt(new \DateTime());
         $entityManager->flush();

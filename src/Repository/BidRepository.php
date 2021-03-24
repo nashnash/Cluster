@@ -20,36 +20,9 @@ class BidRepository extends ServiceEntityRepository
         parent::__construct($registry, Bid::class);
     }
 
-    // /**
-    //  * @return Bid[] Returns an array of Bid objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Bid
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 
     /**
+     * Trouve le l'enchère courante
      * @param Event $event
      * @return Bid|null
      * @throws \Doctrine\ORM\NonUniqueResultException
@@ -62,4 +35,6 @@ class BidRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+
 }

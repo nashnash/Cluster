@@ -46,6 +46,12 @@ class Bid
      */
     private $professional;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $nbPromotion;
+
 
     public function __construct()
     {
@@ -113,6 +119,18 @@ class Bid
     public function setProfessional(?User $professional): self
     {
         $this->professional = $professional;
+
+        return $this;
+    }
+
+    public function getNbPromotion(): ?int
+    {
+        return $this->nbPromotion;
+    }
+
+    public function setNbPromotion(int $nbPromotion): self
+    {
+        $this->nbPromotion = $nbPromotion;
 
         return $this;
     }

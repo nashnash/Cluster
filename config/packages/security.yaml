@@ -38,11 +38,11 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/discussions, roles: ROLE_USER }
         - { path: ^/dashboard/events/new, roles: ROLE_PRO }
-        - { path: ^/dashboard/events/, roles: IS_AUTHENTICATED_FULLY }
-        #- { path: ^/dashboard/events/{id}, roles: ROLE_PRO }
-       # - { path: ^/dashboard/events/{id}/edit , roles: ROLE_PRO }
-        #- { path: ^/dashboard/events/remove_reservation/{id}/{id_user} , roles: ROLE_PRO }
-
+        - { path: ^/dashboard/events/$, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/dashboard/events/promote/*, roles: ROLE_PRO }
+        - { path: ^/dashboard/events/remove_reservation/* , roles: ROLE_PRO }
+        - { path: ^/dashboard/events/reserve/* , roles: ROLE_USER }
+        - { path: ^/dashboard/events/desiste/* , roles: ROLE_USER }
 
 
     role_hierarchy:

@@ -20,43 +20,27 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
-    // /**
-    //  * @return Event[] Returns an array of Event objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Event
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-
-    /**
-     * @return int|mixed|string
-     */
     public function findNext10DaysEvents()
     {
         return $this->createQueryBuilder('e')
             ->leftJoin('e.participants', 'participants')
             ->where('DATE_DIFF(CURRENT_DATE(),e.date_start) <= 10 AND DATE_DIFF(CURRENT_DATE(),e.date_start) <= 0')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param User $user
+     * @return int|mixed|string
+     */
+    public function findNext10DaysEventsByPro(User $user)
+    {
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.participants', 'participants')
+            ->where('e.user = :user')
+            ->orWhere('participants.id = :user')
+            ->setParameter("user",$user->getId())
             ->getQuery()
             ->getResult();
     }
@@ -81,20 +65,21 @@ class EventRepository extends ServiceEntityRepository
      * @param User $user
      * @return int|mixed|string
      */
-    public function getActualEvents(User $user)
+    public function getActualEtFutureEventsByPro(User $user)
     {
         return $this->createQueryBuilder('e')
             ->leftJoin('e.participants', 'participants')
             ->where('e.user = :user')
             ->orWhere('participants.id = :user')
-            ->andWhere('e.date_end >= CURRENT_DATE()')
-            ->andWhere('e.date_start <= CURRENT_DATE()')
+           // ->andWhere('e.date_start > CURRENT_DATE()')
+            ->andWhere('e.date_end > CURRENT_DATE()')
             ->setParameter('user', $user->getId())
             ->getQuery()
             ->getResult();
     }
 
     /**
+     * Retourne la liste des events des pro en top list de leur promotion d'event
      * @return int|mixed|string
      */
     public function getEventsProByTopList()
@@ -107,5 +92,40 @@ class EventRepository extends ServiceEntityRepository
             ->orderBy('b.capital', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Obtenir les statistiques d'un évenement
+     * @param Event $event
+     * @return int|mixed|string
+     */
+    public function getEventStats(Event $event)
+    {
+
+        return $this->createQueryBuilder('e')
+            ->from("App\Entity\User","u")
+            ->from("App\Entity\Bid","b")
+            ->leftJoin('e.participants','participants')
+            ->leftJoin('e.bids', 'bids')
+            ->where('e.user = u.id')
+            ->andWhere("e.id = :event")
+            ->setParameter('event', $event->getId())
+            //->groupBy("bids.nbPromotion")
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Retourne le nombre d'événement créés par jour
+     * @return int|mixed|string
+     */
+    public function nbCreatedEventByDay(){
+
+        return $this->createQueryBuilder('e')
+            ->select("substring(e.created_at,1,10) as dateCreation,count(e.created_at) as count")
+            ->groupBy("dateCreation")
+            ->getQuery()
+            ->getResult();
+
     }
 }
